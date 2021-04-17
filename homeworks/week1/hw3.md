@@ -15,4 +15,3 @@ mkdir wifi
 cd wifi 
 touch afu.js
 ```
-
