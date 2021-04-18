@@ -134,7 +134,7 @@ sed '2c Living in the heaven' red.txt
 ![Imgur](https://i.imgur.com/qAxTWAB.jpg)
 
 4. **d**（delete） 
-刪除第一到第五行（第一段）。
+刪除第一到第五行（刪除第一段）。
 
 ```
 sed 1,5d red.txt
