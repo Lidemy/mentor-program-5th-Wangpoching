@@ -7,3 +7,13 @@ do
 	number=$((${number}+1)) # number += 1
 done # 結束
 echo "檔案建立完成" # 印出完成訊息
+
+```
+#!/bin/sh
+
+for (( i=1; i<=$1; i=i+1 ))
+do
+  touch "${i}.js";
+done
+echo "檔案建立完成";
+```
