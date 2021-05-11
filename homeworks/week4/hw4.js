@@ -9,8 +9,14 @@ const options = {
 }
 
 function callback(error, response, body) {
-  if (!error && response.statusCode === 200) {
-    const info = JSON.parse(body)
+  if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+    let info
+    try {
+      info = JSON.parse(body)
+    } catch (err) {
+      console.log(err)
+      return
+    }
     for (let i = 0; i < info.top.length; i++) {
       console.log(`${info.top[i].viewers} ${info.top[i].game.name}`)
     }
