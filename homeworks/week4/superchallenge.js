@@ -12,7 +12,13 @@ function list() {
 
   const req = https.request(options, (res) => {
     res.on('data', (d) => {
-      const books = JSON.parse(d)
+      let books
+      try {
+        books = JSON.parse(d)
+      } catch (err) {
+        console.log(err)
+        return
+      }
       for (let i = 0; i < books.length; i++) {
         console.log(`${i + 1} ${books[i].name}`)
       }
@@ -35,7 +41,13 @@ function getBook(id) {
 
   const req = https.request(options, (res) => {
     res.on('data', (d) => {
-      const book = JSON.parse(d)
+      let book
+      try {
+        book = JSON.parse(d)
+      } catch (err) {
+        console.log(err)
+        return
+      }
       console.log(`${id} ${book.name}`)
     })
   })
