@@ -7,18 +7,14 @@ request(
   (error, response, body) => {
     if (error) {
       console.log(error)
-      return
-    }
-    let countries
-    try {
-      countries = JSON.parse(body)
-    } catch (err) {
-      console.log(err)
-      return
-    }
-    if (countries.message === 'Not Found') {
-      console.log('找不到國家資訊')
-    } else {
+    } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+      let countries
+      try {
+        countries = JSON.parse(body)
+      } catch (err) {
+        console.log(err)
+        return
+      }
       console.log('============')
       for (let i = 0; i < countries.length; i++) {
         console.log(`國家：${countries[i].name}`)
@@ -26,6 +22,17 @@ request(
         console.log(`貨幣：${countries[i].currencies[0].code}`)
         console.log(`國碼：${countries[i].callingCodes[0]}`)
         console.log('============')
+      }
+    } else if (response.statusCode === 404) {
+      let countries
+      try {
+        countries = JSON.parse(body)
+      } catch (err) {
+        console.log(err)
+        return
+      }
+      if (countries.message === 'Not Found') {
+        console.log('Can not find any country.')
       }
     }
   }

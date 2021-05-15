@@ -16,13 +16,13 @@
 ### **回傳所有餐廳資料**
 
 ##### 使用範例：
-curl -X GET 'https://api.restaurants/list'
+curl -X GET 'https://api.restaurants'
 
 ##### 回應範例：
 [
-  {'ID1'：'NAME1'}
-  {'ID2'：'NAME2'}
-  {'ID3'：'NAME3'}
+  {'ID1'：'NAME1'},
+  {'ID2'：'NAME2'},
+  {'ID3'：'NAME3'},
   ...
 ]
 
@@ -33,7 +33,7 @@ curl -X GET 'https://api.restaurants/list'
 ### **回傳單一餐廳資料**
 
 ##### 使用範例：
-curl -X GET 'https://api.restaurants/{ID}'
+curl -X GET 'https://api.restaurants/:id'
 
 ##### 回應範例：
 {'ID1'：'NAME1'}
@@ -45,7 +45,7 @@ curl -X GET 'https://api.restaurants/{ID}'
 ### **刪除餐廳**
 
 ##### 使用範例：
-curl -X DELETE "https://api.restaurants/{ID}"
+curl -X DELETE "https://api.restaurants/:id"
 
 -------------------------------
 
@@ -63,6 +63,6 @@ curl -X POST -H "Content-Type: application/json" -d '{"name" : name}' "https://a
 ### **更改餐廳**
 
 ##### 使用範例
-curl -X PATCH -H "Content-Type: application/json" -d '{"name" : name}' "https://api.restaurants/{ID}"
+curl -X PATCH -H "Content-Type: application/json" -d '{"name" : name}' "https://api.restaurants/:id"
 
 
