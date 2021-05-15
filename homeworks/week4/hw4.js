@@ -8,8 +8,10 @@ const options = {
   }
 }
 
-function callback(error, response, body) {
-  if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+function infoParser(error, response, body) {
+  if (error) {
+    console.log(error)
+  } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
     let info
     try {
       info = JSON.parse(body)
@@ -23,4 +25,4 @@ function callback(error, response, body) {
   }
 }
 
-request(options, callback)
+request(options, infoParser)

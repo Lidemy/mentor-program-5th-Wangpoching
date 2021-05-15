@@ -1,19 +1,51 @@
+// 備註：這個程式碼還需要別的東西才能跑，因為 Twitch API 規則有變
+// 所以基本上只是讓大家看個概念而已，概念絕對是相通的，可以自己換成舊的 API 試試看
 const request = require('request')
 const process = require('process')
 
-function offset(n) {
-  const options = {
-    url: `https://api.twitch.tv/kraken/search/channels?query=${process.argv[2]}&limit=100&offset=${n}`,
+const Accept = 'application/vnd.twitchtv.v5+json'
+const Client = 'xkypa7ouwlhjupibscd4mk8lhwgtgk'
+const BASE_URL = 'https://api.twitch.tv/kraken'
+
+/*
+  callback 會根據參數回傳部分實況列表
+*/
+function getStreams(name, callback) {
+  const url = `${BASE_URL}/streams/?game=${name}&limit=100&offset=0`
+  request({
+    url,
     headers: {
-      Accept: 'application/vnd.twitchtv.v5+json',
-      'Client-ID': 'xkypa7ouwlhjupibscd4mk8lhwgtgk'
+      Accept,
+      'Client-ID': Client
     }
-  }
-  return options
+  }, callback)
 }
 
-function callback(error, response, body) {
-  if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+getStreams(process.argv[2], (err, res, body) => {
+  if (err) {
+    return console.log(err)
+  }
+  let info
+  try {
+    info = JSON.parse(body)
+  } catch (err) {
+    console.log(err)
+    return
+  }
+  for (let i = 0; i < info.streams.length; i++) {
+    console.log(info.streams[i].channel.name, info.streams[i].viewers)
+  }
+  const url = `${BASE_URL}/streams/?game=${process.argv[2]}&limit=100&offset=101`
+  request({
+    url,
+    headers: {
+      Accept,
+      'Client-ID': Client
+    }
+  }, (err, res, body) => {
+    if (err) {
+      return console.log(err)
+    }
     let info
     try {
       info = JSON.parse(body)
@@ -21,30 +53,10 @@ function callback(error, response, body) {
       console.log(err)
       return
     }
-    console.log('"ID" "NAME"')
-    for (let i = 0; i < info.channels.length; i++) {
-      console.log(`${info.channels[i]._id} ${info.channels[i].name}`)
+    for (let i = 0; i < info.streams.length; i++) {
+      console.log(info.streams[i].channel.name, info.streams[i].viewers)
     }
-    request(offset(1), (error, response, body) => {
-      if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        let info_
-        try {
-          info_ = JSON.parse(body)
-        } catch (err) {
-          console.log(err)
-          return
-        }
-        for (let j = 0; j < info_.channels.length; j++) {
-          console.log(`${info_.channels[j]._id} ${info_.channels[j].name}`)
-        }
-      }
-    }
-    )
   }
+  )
 }
-
-function main() {
-  request(offset(0), callback)
-}
-
-main()
+)

@@ -3,21 +3,21 @@ const process = require('process')
 
 function list() {
   request(
-    'https://lidemy-book-store.herokuapp.com/books',
+    'https://lidemy-book-store.herokuapp.com/books?_limit=20',
     (error, response, body) => {
       if (error) {
         console.log(error)
-        return
-      }
-      let books
-      try {
-        books = JSON.parse(body)
-      } catch (err) {
-        console.log(err)
-        return
-      }
-      for (let i = 0; i < books.length; i++) {
-        console.log(`${i + 1} ${books[i].name}`)
+      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+        let books
+        try {
+          books = JSON.parse(body)
+        } catch (err) {
+          console.log(err)
+          return
+        }
+        for (let i = 0; i < books.length; i++) {
+          console.log(`${books[i].id} ${books[i].name}`)
+        }
       }
     }
   )
@@ -29,29 +29,54 @@ function getBook(id) {
     (error, response, body) => {
       if (error) {
         console.log(error)
-        return
+      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+        let book
+        try {
+          book = JSON.parse(body)
+        } catch (err) {
+          console.log(err)
+          return
+        }
+        if (book.name) {
+          console.log(`${book.name}`)
+        } else {
+          console.log('book does not exist')
+        }
       }
-      let book
-      try {
-        book = JSON.parse(body)
-      } catch (err) {
-        console.log(err)
-        return
-      }
-      console.log(`${id} ${book.name}`)
     }
   )
 }
 
-function delBook(id) {
-  request.delete(
+function deleteBook(id) {
+  request(
     `https://lidemy-book-store.herokuapp.com/books/${id}`,
     (error, response, body) => {
       if (error) {
         console.log(error)
-        return
+      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+        let book
+        try {
+          book = JSON.parse(body)
+        } catch (err) {
+          console.log(err)
+          return
+        }
+        if (book.name) {
+          console.log(`${book.name}`)
+          request.delete(
+            `https://lidemy-book-store.herokuapp.com/books/${id}`,
+            (error, response, body) => {
+              if (error) {
+                console.log(error)
+              } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+                console.log('delete this book successfully')
+              }
+            }
+          )
+        } else {
+          console.log('book does not exist')
+        }
       }
-      console.log('delete sucessfully')
     }
   )
 }
@@ -67,27 +92,47 @@ function addBook(name) {
     (error, response, body) => {
       if (error) {
         console.log(error)
-        return
+      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+        console.log('add successfully')
       }
-      console.log('add successfully')
     }
   )
 }
 
 function updateBook(id, name) {
-  request.patch(
-    {
-      url: `'https://lidemy-book-store.herokuapp.com/books/${id}`,
-      form: {
-        name
-      }
-    },
+  request(
+    `https://lidemy-book-store.herokuapp.com/books/${id}`,
     (error, response, body) => {
       if (error) {
         console.log(error)
-        return
+      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+        let book
+        try {
+          book = JSON.parse(body)
+        } catch (err) {
+          console.log(err)
+          return
+        }
+        if (book.name) {
+          request.patch(
+            {
+              url: `https://lidemy-book-store.herokuapp.com/books/${id}`,
+              form: {
+                name
+              }
+            },
+            (error, response, body) => {
+              if (error) {
+                console.log(error)
+              } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+                console.log('update successfully')
+              }
+            }
+          )
+        } else {
+          console.log('book does not exist')
+        }
       }
-      console.log('update successfully')
     }
   )
 }
@@ -98,7 +143,7 @@ function main() {
   } else if (process.argv[2] === 'read') {
     getBook(process.argv[3])
   } else if (process.argv[2] === 'delete') {
-    delBook(process.argv[3])
+    deleteBook(process.argv[3])
   } else if (process.argv[2] === 'create') {
     addBook(process.argv[3])
   } else if (process.argv[2] === 'update') {
