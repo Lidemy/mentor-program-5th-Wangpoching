@@ -51,7 +51,5 @@ getStreams(process.argv[2], (err, res, body) => {
     for (let i = 0; i < info.streams.length; i++) {
       console.log(info.streams[i].channel.name, info.streams[i].viewers)
     }
-  }
-  )
-}
-)
+  })
+})
