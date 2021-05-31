@@ -41,15 +41,7 @@ window.addEventListener('load',
     )
 
     // 生成 timer
-    let timer = setInterval(() => {
-      // 向右切換圖片
-      nIndex++
-      // 已切換到最后一張圖片時，跳回第一張圖片
-      if (nIndex > (document.querySelectorAll('li').length - 1)) {
-        nIndex = 0
-      }
-      SwitchSlide(nIndex)
-    }, 3000)
+    let timer
 
     // 滑鼠移出投影片開始自動切換
     document.querySelector('.container').addEventListener('mouseenter',
