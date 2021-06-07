@@ -106,12 +106,12 @@ function reFillStreams(data, nthRequest) {
   if (nthRequest === 0) {
     streamsContainer.innerHTML = ''
   }
-  // 實況照熱門順序排列（防止 response 回來的時間不同）
-  for (let i = 0; i < data.streams.length; i++) {
-    const div = document.createElement('div')
-    const refPosition = nthRequest * 20 + i - 1
-    // 如果是第一次或是找不到上一次的屁股就塞在最後面
-    if (nthRequest === 0 || !document.querySelector(`.N${refPosition}`)) {
+  // 實況照熱門順序排列（防止 response 回來的時間不同
+
+  // 如果是第一次塞在最後面
+  if (nthRequest === 0) {
+    for (let i = 0; i < data.streams.length; i++) {
+      const div = document.createElement('div')
       streamsContainer.appendChild(div)
       div.outerHTML = TEMPLATE_HTML
         .replace('$large', data.streams[i].preview.large)
@@ -119,16 +119,26 @@ function reFillStreams(data, nthRequest) {
         .replace('$status', data.streams[i].channel.status)
         .replace('$name', data.streams[i].channel.name)
         .replace('$nthRequest', `N${nthRequest * 20 + i}`)
-    } else {
-      // 如果找的到上次的屁股就塞在他後面
-      const referenceNode = document.querySelector(`.N${refPosition}`)
-      referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling)
-      div.outerHTML = TEMPLATE_HTML
-        .replace('$large', data.streams[i].preview.large)
-        .replace('$logo', data.streams[i].channel.logo)
-        .replace('$status', data.streams[i].channel.status)
-        .replace('$name', data.streams[i].channel.name)
-        .replace('$nthRequest', `N${nthRequest * 20 + i}`)
+    }
+  } else {
+    // 如果找的到之前的屁股就塞在他後面
+    let refPosition = nthRequest * 20 - 1
+    while (refPosition >= 19) {
+      if (document.querySelector(`.N${refPosition}`)) {
+        for (let i = 0; i < data.streams.length; i++) {
+          const div = document.createElement('div')
+          const neighbor = document.querySelector(`.N${refPosition + i}`)
+          neighbor.parentNode.insertBefore(div, neighbor.nextSibling)
+          div.outerHTML = TEMPLATE_HTML
+            .replace('$large', data.streams[i].preview.large)
+            .replace('$logo', data.streams[i].channel.logo)
+            .replace('$status', data.streams[i].channel.status)
+            .replace('$name', data.streams[i].channel.name)
+            .replace('$nthRequest', `N${nthRequest * 20 + i}`)
+        }
+        break
+      }
+      refPosition -= 20
     }
   }
 }
