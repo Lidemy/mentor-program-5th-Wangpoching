@@ -153,22 +153,22 @@ server 端可以透過這個方法來傳資料，只要把內容包在一個函�
 比如說我們在 HTML 裡寫
 
 ```HTML
-<script src="https://some.com/api?funcname=getData"></script>
 <script>
   function getData(res) {
     console.log(res);
   }
 </script>
+<script src="https://some.com/api?funcname=getData"></script>
 ```
 
-這邊是假設有一個支援 JSONP 模式的 server，使用者在 querystring 掛上函式的名稱，
+這邊是假設有一個支援 JSONP 模式的 server，使用者在 querystring 掛上函式的名稱，把 call api 放在後面是因為要先定義好函式否則會報錯，
 以這個例子來說，假設資料是 123， server 就會回傳：
 
 ```
 getData('123')
 ```
 
-最後我們就可以在 devtool 的 console 上看到 '123' 被印出來，但是要注意 JSON 只支援最基本的 get 方法。
+最後我們就可以在 devtool 的 console 上看到 '123' 被印出來，但是要注意 JSON 只支援最基本的 get 方法。 
 
 ## 為什麼我們在用 nodeJS 時沒碰到跨網域的問題，現在卻碰到了？
 
