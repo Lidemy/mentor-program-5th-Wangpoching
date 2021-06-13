@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>計算機率</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
+  <link rel="stylesheet" href="./modal.css" />
+  <script src="./index.js"></script>
+</head>
+
+<body>
+  迭代次數: <span class="total" data-times=0></span><br>
+  頭獎次數: <span class="first" data-times=0></span>頭獎機率: <div class="first_rate" data-rate=0></div><br>
+  貳獎次數: <span class="second" data-times=0></span>貳獎機率:<div class="second_rate" data-rate=0></div><br>
+  參獎次數: <span class="third" data-times=0></span>參獎機率:<div class="third_rate" data-rate=0></div><br>
+  沒獎次數: <span class="none" data-times=0></span>沒獎機率:<div class="none_rate" data-rate=0></div><br>
+  系統錯誤次數: <span class="error" data-times=0></span>系統錯誤機率:<div class="error_rate" data-rate=0></div><br>
+  <input class="input" type="text" placeholder="請輸入 100~1000 的數字">
+  <div class="warning">請輸入 10~1000 之間的數字</div>
+  <div class="btn">開始計算</div>
+</body>
+</html>
