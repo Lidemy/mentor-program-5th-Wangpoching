@@ -44,7 +44,7 @@ devtools 的功能非常多樣，最基本的可以在上面修改 html 與 css 
 ，設計師真的很厲害，作品美哭我。
 
 接著另一個作業要全部自己切了，作業內容要切一個表單，在這個表單裡扎扎實實的練習了
-form、input 的種種細節，包括最簡單的輸入文字的輸入框，到複雜一點的 check 欄位，最後費了一番手腳也是把表單切出來了，成品在[這裡](https://mentor-program.co/mtr04group3/Wangpoching/Lazy/)，在切作業的過程中，也開始學習去寫 RWD（Responsive Web Design），這邊可以記錄一下一般以寬度 768px 以上為平板與電腦，而 320px ~ 768px 為手機的版型。
+form、input 的種種細節，包括最簡單的輸入文字的輸入框，到複雜一點的 check 欄位，最後費了一番手腳也是把表單切出來了，成品在[這裡](https://mentor-program.co/mtr04group3/Wangpoching/Lazy/form.php)，在切作業的過程中，也開始學習去寫 RWD（Responsive Web Design），這邊可以記錄一下一般以寬度 768px 以上為平板與電腦，而 320px ~ 768px 為手機的版型。
 
 ### **第七週**
 
@@ -254,7 +254,7 @@ Apache server 這一套 server 的實作是根據**檔案路徑**的方式，其
 
 其實 PHP 就有內建上述的 token 功能，使用 PHP 內建 session 機制每次登入的時候，server 會請瀏覽器帶上一組 ssID，這組 ssID 可以存變數（存在後端），我們把 username 當作變數跟這組 ssID 存在後端，後續的流程便與原本一模一樣了。瀏覽器帶上 ssID 是使用名叫 cookie 的小型文字檔，想了解更多可以參考[這篇文章](https://lidemy5thwbc.coderbridge.io/2021/06/15/mysql-cookie/)。
 
-* [留言板]()
+* [留言板](https://mentor-program.co/mtr04group3/Wangpoching/comment_board/index.php)
 
 ### **總結**
 
