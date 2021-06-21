@@ -1,6 +1,6 @@
 ## 資料庫欄位型態 VARCHAR 跟 TEXT 的差別是什麼
 
-在新增 SQL 的 TABLE 欄位的時候，會遇到 **TEXT** 、 **VARCHAR** 以及 **CHAR** 的選擇，是個壤人困擾的問題。
+在新增 SQL 的 TABLE 欄位的時候，會遇到 **TEXT** 、 **VARCHAR** 以及 **CHAR** 的選擇，是個讓人困擾的問題。
 
 首先來比較 VARCHAR 以及 CHAR。CHAR 以及 VARCHAR 都可以設定一個 length 的參數，不過兩者對於 length 的解釋稍有不同。對於 CHAR 來說，length 代表**每筆資料都固定是 legth 的長度**；對於 VARCHAR 來說，length 代表**每筆資料不能超過 length 的長度**，所以說，VARCHAR 可以解釋成 length-variable CHAR （長度可變的 CHAR）。
 
