@@ -29,7 +29,7 @@
 1. [盒模型](https://lidemy5thwbc.coderbridge.io/2021/05/25/css/)
 2. [定位](https://lidemy5thwbc.coderbridge.io/2021/05/25/css/)
 
-當我們了解盒模型以及不同定位元素的方式以後，可以試著練習一個強大的 display 選項–**flex-box**，這邊推薦[圖解：CSS Flex 屬性一點也不難| 卡斯伯Blog - 前端，沒有極限](https://wcc723.github.io/css/2017/07/21/css-flex/) 以及 [Flexbox Froggy](http://flexboxfroggy.com/)來練習。
+當我們了解盒模型以及不同定位元素的方式以後，可以試著練習一個強大的 display 選項 – **flex-box**，這邊推薦[圖解：CSS Flex 屬性一點也不難| 卡斯伯Blog - 前端，沒有極限](https://wcc723.github.io/css/2017/07/21/css-flex/) 以及 [Flexbox Froggy](http://flexboxfroggy.com/)來練習。
 
 最後個人覺得可以把 **word-break** **white-space** **overflow** **text-overflow** 這幾個屬性的功能給熟悉，因為他們在 RWD 上扮演著關鍵角色，除此之外剩下的細節大概上網查都不會有太大的問題。
 
@@ -39,8 +39,7 @@ devtools 的功能非常多樣，最基本的可以在上面修改 html 與 css 
 
 #### **作業 - 餐廳網站主頁、表單**
 
-第六週的作業打鐵趁熱，馬上要來切版，老實說看到餐廳網站的設計稿的時候，是很沒信心的，沒想到在跟著胡立的影片切了兩天以後，竟然切出來了，成品在[這裡]
-(https://mentor-program.co/mtr04group3/Wangpoching/restaurant/) 
+第六週的作業打鐵趁熱，馬上要來切版，老實說看到餐廳網站的設計稿的時候，是很沒信心的，沒想到在跟著胡立的影片切了兩天以後，竟然切出來了，成品在[這裡](https://mentor-program.co/mtr04group3/Wangpoching/restaurant/) 
 ，設計師真的很厲害，作品美哭我。
 
 接著另一個作業要全部自己切了，作業內容要切一個表單，在這個表單裡扎扎實實的練習了
@@ -198,7 +197,7 @@ window.addEventListener('load', () => {
 
 最後一個要注意的地方就是因為 request 回來的時間不一，所以在取得新的實況資訊時不能直接補在底部，可以考慮用 [Node.insertBefore](https://developer.mozilla.org/zh-TW/docs/Web/API/Node/insertBefore)來實作，也可以善用[dataset 屬性](https://developer.mozilla.org/zh-TW/docs/Web/API/HTMLOrForeignElement/dataset)來儲存每個直播的排名。
 
-#### **eventloop**
+#### **Eventloop**
 
 第八週也對 eventloop 有了更深的認識，所謂同步可以想像只有一個工作程序，所以大家都要照順序，**處理完一個才換下一個** ，而非同步的概念是雖然還是要排隊，但是工作會**轉交給不同人處理**，所以不用等前一個人的工作處理完才輪到下一個人的工作開始處理。
 
