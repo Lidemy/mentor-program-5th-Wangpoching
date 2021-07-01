@@ -99,10 +99,10 @@
             <?php if ($row['username'] === $username || $identity === 1) {?>
               <div class="tools">
               <?php if (has_permission($username, 'editable')){ ?>
-                <a href="update_comment.php?id=<?php echo $row['id']; ?>"><img class="alter-content" src="images/alter_img.jpg"></img></a>
+                <a href="update_comment.php?id=<?php echo escape($row['id']); ?>"><img class="alter-content" src="images/alter_img.jpg"></img></a>
               <?php } ?>
               <?php if (has_permission($username, 'deletable')){ ?>
-                <a href="pre_delete_comment.php?id=<?php echo $row['id']; ?>"><img class="delete-content" src="images/delete_img.png"></img></a>
+                <a href="pre_delete_comment.php?id=<?php echo escape($row['id']); ?>"><img class="delete-content" src="images/delete_img.png"></img></a>
               <?php } ?>
               </div>
           <?php } ?>
