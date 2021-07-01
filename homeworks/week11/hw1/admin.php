@@ -131,7 +131,7 @@
       ?>
       <div class="bottom">
         <div class="page_info">
-          <span>共有 <?php echo $total_count; ?> 筆資料</span>
+          <span>共有 <?php echo escape($total_count); ?> 筆資料</span>
           <span>第 <?php echo escape($page); ?> 頁</span>
         </div>
         <div class="pagination_container">
