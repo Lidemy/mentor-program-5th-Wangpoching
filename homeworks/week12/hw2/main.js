@@ -188,6 +188,7 @@ $(window).ready(() => {
         return
       }
       if (res.access_token) {
+        $(`<input type="hidden" class="access-token" value="${escape(res.access_token)}">`).insertBefore('.clear-select')
         alert(`Please remember your access token : ${escape(res.access_token)}`)
       } else {
         alert('saved')
