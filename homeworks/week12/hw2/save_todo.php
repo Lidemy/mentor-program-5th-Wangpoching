@@ -43,6 +43,28 @@
   }
 
   // 有攜帶通行碼
+
+  // 檢查通行碼
+  $sql = 'SELECT * FROM boching_todos WHERE access_token=?';
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param('s', $_POST['access_token']);  
+  $result = $stmt->execute();
+  // 資料庫錯誤
+  if (!result) {
+    $err_json['message'] = $conn->error;
+    $response = json_encode($err_json);
+    echo $response;
+    die();
+  }
+  $result = $stmt->get_result(); 
+  // 通行碼錯誤
+  if ($result->num_rows !== 1) {
+    $err_json['message'] = 'Wrong access token';
+    $response = json_encode($err_json);
+    echo $response;
+    die();  
+  } 
+  // 儲存 todos
   $sql = 'UPDATE boching_todos SET content=? WHERE access_token=?';
   $stmt = $conn->prepare($sql);
   $stmt->bind_param('ss',$data, $_POST['access_token']);  
@@ -53,13 +75,6 @@
     $response = json_encode($err_json);
     echo $response;
     die();
-  }
-  // 通行碼錯誤
-  if ($stmt->affected_rows !== 1) {
-    $err_json['message'] = 'Wrong access token';
-    $response = json_encode($err_json);
-    echo $response;
-    die();  
   }
   // 修改成功
   $response = json_encode($json);
