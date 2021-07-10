@@ -15,3 +15,9 @@ body {
   display: none;
 }
 
+.main {
+  padding-bottom: 0!important;
+  margin-bottom: 10vh;
+}
+
+

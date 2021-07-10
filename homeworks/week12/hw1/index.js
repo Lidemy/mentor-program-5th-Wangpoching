@@ -16,7 +16,7 @@ function escape(string) {
 // 添加留言到 DOM
 function addComment2DOM(container, comment, id, isAppend = true, apper = true) {
   const html = `
-    <div class="col-8 comment mt-3 ${apper ? '' : 'hide'}">
+    <div class="col-8 comment mb-3 ${apper ? '' : 'hide'}">
       <div class="toast" data-id = "${id}" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
           <strong class="me-auto">${escape(comment.nickname)}</strong>
@@ -94,6 +94,11 @@ $(document).ready(() => {
         return
       }
       const comments = res.discussions
+      if (comments.length === 0) {
+        hasComment = false
+        console.log('no comment')
+        return
+      }
       for (const comment of comments) {
         addComment2DOM($('.comments'), comment, count + 1, true, false)
       }
@@ -101,6 +106,20 @@ $(document).ready(() => {
       $(`[data-id="${count + 1}"].toast`).toast({ autohide: false })
       $(`[data-id="${count + 1}"].toast`).toast('show')
       count += 1
+      // 如果留言板高度 < 視窗高度，留言板的 size 改變就添加載入更多按鈕
+      const main = document.querySelector('.main')
+      const myObserver = new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          if ($('.main').height() < $(window).height()) {
+            if ($('.loadmore').length === 0 && hasComment) {
+              $('.comments').append(`
+                <div class="row justify-content-center my-3"><button class="btn btn-primary col-4 loadmore" type="button">載入更多</button></div>
+              `)
+            }
+          }
+        })
+      })
+      myObserver.observe(main)
     })
   })
 
@@ -142,7 +161,7 @@ $(document).ready(() => {
     if ($(document).height() - $(window).scrollTop() - $(window).height() < 100) {
       if ($('.loadmore').length === 0 && hasComment) {
         $('.comments').append(`
-          <div class="row justify-content-center mt-3"><button class="btn btn-primary col-4 loadmore" type="button">載入更多</button></div>
+          <div class="row justify-content-center my-3"><button class="btn btn-primary col-4 loadmore" type="button">載入更多</button></div>
         `)
       }
     }
