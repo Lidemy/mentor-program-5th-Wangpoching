@@ -1,0 +1,176 @@
+.navbar {
+	box-shadow: -1.4px -1.4px 6px 0 #97a2a0;
+	height: auto;
+}
+
+.navbar-wrapper {
+	height: 120px;
+	background: white;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.navbar-sitename {
+	color: black;
+	font-size: 20px;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.navbar-list {
+    width: 100%;
+	list-style: none;
+   	margin-top: 10px;
+	padding: 0;
+	display: flex;
+}
+
+.navbar-list li {
+	margin-left: 0px;
+	flex: 1;
+	text-align: center;
+}
+
+
+.navbar-list li.active a, .navbar-list li:hover a {
+	background: #ff7286;
+	color: white;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.navbar-list li a {
+	text-decoration: none;
+	color: #010101;
+    padding: 12px 8px;
+	display: block;
+	transition: background 0.5s;
+    font-size: 8px;
+}
+
+main {
+	background:radial-gradient(circle farthest-side at center,#7B7B7B,black);
+	height: auto;
+	text-align: center;
+	padding: 20px 0;
+}
+
+.game-name {
+	color:  white;
+	font-size:  24px;
+}
+
+.desc {
+	padding: 20px 0;
+	color:  white;
+	font-size:  16px;
+}
+
+.streams-container {
+	display:  flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	flex-wrap: wrap;
+	align-items: center;
+	height: auto;
+}
+
+.stream {
+	width: 300px;
+	height:  auto;
+	margin: 25px 25px;
+	background: #272727;
+}
+
+.stream:hover {
+	transform: scale(1.1);
+}
+
+.stream-extra {
+	padding: 3px 3px;
+	display:  flex;
+	align-items: center;
+}
+
+.stream-avatar {
+	width:  50px;
+	height:  50px;
+	border-radius:  50%;
+	margin-right:  5px;
+}
+
+.cover {
+	width: 300px;
+	height:  200px;
+}
+
+.stream-details {
+	text-align: left;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color:  white;
+}
+
+.stream-info {
+	text-align: left;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color:  white;
+}
+
+.stream-title {
+	font-size:  10px;
+	margin-top:  5px;
+}
+
+.stream-info {
+	font-size:  12px;
+	white-space: nowrap;
+}
+
+
+@media only screen and (min-width: 768px) {
+	.navbar-wrapper {
+		flex-direction: row;
+		max-width: 1280px;
+    	margin: 0 auto;
+    	padding: 0 12px;
+    	justify-content: space-between;
+    	align-items: center;
+	}
+
+	.navbar-sitename {
+		margin-bottom: 0;
+	}
+
+	.navbar-list {
+		width: auto;
+		margin: 0;
+	}
+	.navbar-list li {
+		margin-left: 35px;
+	}
+	.navbar-list li a {
+		border-radius: 8px;
+	    padding: 12px 12px;
+    	font-size: 16px;
+	}
+	.desc {
+		font-size:  20px;
+	}
+
+	.streams-container {
+		flex-direction: row;
+		max-width: 1280px;
+    	margin: 0 auto;
+    	padding: 0 12px;
+    	justify-content: center;		
+	}
+}

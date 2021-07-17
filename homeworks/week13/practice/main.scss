@@ -1,0 +1,96 @@
+@import '_variables.scss';
+
+@function letter-spacing($font-index) {
+  @return $font-index / 10 * 0.2rem;
+}
+
+@mixin btn($color, $font-index) {
+  &:hover {
+    background: $color;
+    letter-spacing: letter-spacing($font-index);
+  }  
+}
+
+@mixin flex-center() {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+
+.section {
+  width: 100%;
+  height: 50%;
+  border-bottom: 1px solid #000;
+  padding: 2rem;
+  &__title {
+    text-align: center;
+  }
+  &__wrapper {
+    @include flex-center;
+  }
+}
+
+.color {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  background: #000;
+  &-primary {
+    background: $primary;
+  }
+  &-secondary {
+    background: $secondary;
+  }
+  &-warning {
+    background: $warning;
+  }
+  &-text {
+    background: $text;
+  }
+  &-background {
+    background: $background;
+  }
+}
+
+%btn {
+  padding: 1rem 2rem;
+  color: $background;
+  font-size: 1rem;
+  margin: 1rem;
+  transition:  .1s;
+}
+.btn {
+  &-primary {
+    @extend %btn;
+    @include btn($primary, 2);
+  }
+  &-secondary {
+    @extend %btn;
+    @include btn($secondary, 3);
+  }
+  &-warning {
+    @extend %btn;
+    @include btn($warning, 100);
+  }
+}
+
+$direction-types: (center: center, start: flex-start, end: flex-end);
+
+@each $type, $value in $direction-types {
+  .flex-#{$type} {
+    display: flex;
+    justify-content: $value;
+    align-items: center;
+  }
+}
+
+@for $i from 0 through 5 {
+  .h#{5 - $i + 1} {
+    @if $i % 2 == 0 {
+      font-size: 1 + 0.2rem * $i;
+    }
+    @else {
+      font-size: 1 + 0.3rem * $i;
+    }
+  }
+}
