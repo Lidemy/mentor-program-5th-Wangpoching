@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Webpack App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="style.css" rel="stylesheet">
+  <script defer src="main.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded',() => {
+      commentPlugin.init({
+        siteKey: 'huli',
+        apiUrl: 'http://mentor-program.co/mtr04group3/Wangpoching/api_based_board/',
+        containerClassName:'comment-area2'
+      })   
+      commentPlugin.init({
+        siteKey: 'boching',
+        apiUrl: 'http://mentor-program.co/mtr04group3/Wangpoching/api_based_board/',
+        containerClassName:'comment-area'
+      })
+    }) 
+  </script>
+</head>
+  <body>
+    <div class="comment-area">
+    </div>
+    <div class="comment-area2">
+    </div>    
+  </body>
+</html>
