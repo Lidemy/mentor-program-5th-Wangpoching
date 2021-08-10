@@ -4,7 +4,7 @@ export function getLoadMore(className) {
 
 export function getAddCommentForm(className, commentsClassName, wrapperClassName) {
   return `
-    <div class="${wrapperClassName}">
+    <div class="${wrapperClassName} d-flex flex-column">
       <div class="container bg-light py-5 main">
         <h2>討論區</h2>
         <form class="${className}">
