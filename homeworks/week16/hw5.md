@@ -82,6 +82,12 @@ this 跟其他的變數有根本性的差別，除了 this 以外的變數是由
 
 this 在物件導向裡則和其他語言相同，指向 class 的實例。
 
+#### closure 的實際應用
+
+在 16 週有用 codesandbox 做的練習題，裡面的 debounce 還有 memorize 的功能都是很好的應用，尤其是 debounceu。基於監聽滾動事件載入更多的功能我苦惱了很久，因為很容易被連續 call 到好幾次，這樣會一次載入一大堆，每次數量都不一定。用 debounce 就可以確保下拉載入功能正確的執行。
+
+關於 debounce 還有 memorize 的練習程式碼，可以參考[這裡](https://github.com/Wangpoching/javascript_closure_practice.git)。
+
 
 
 

@@ -138,7 +138,7 @@ callback function 執行的順序應該是這樣的：
 
 因為這五個都是函式，所以會有五個執行環境被誕生，我們就叫他們 Callback EC I ~ Callback EC V。
 
-從 Callback EC I 開始，因為函式裡面沒有任何東西被宣告，也沒有參數，所以 `callbackEC_I.VO = {}`。接著要創造 callbackEC_I.scopeChain，創造 scopeChain 的規則首先放入目前執行環境的 VO，所以 `callbackEC_I.scopeChain = [callbackEC_I.VO]`，接著要加上**函式被定義時的執行環境的 scopeChain**。 因為這個函式是在 SetTimeOut Execution Context I 被定義的，所以 `callbackEC_I.scopeChain = [callbackEC_I.VO, ...setTimeOutEC_I.scopeChain]`，也就是 `callbackEC_I.scopeChain = [callbackEC_I.VO, setTimeOutEC_I.VO, globalEC.VO]`。
+從 Callback EC I 開始，因為函式裡面沒有任何東西被宣告，也沒有參數，所以 `callbackEC_I.VO = {}`。接著要創造 callbackEC_I.scopeChain，創造 scopeChain 的規則首先放入目前執行環境的 VO，所以 `callbackEC_I.scopeChain = [callbackEC_I.VO]`，接著要加上**函式被定義時的執行環境的 scopeChain**。 因為這個函式是在 Global Execution Context I 被定義的，所以 `callbackEC_I.scopeChain = [callbackEC_I.VO, ...globalEC.scopeChain]`，也就是 `callbackEC_I.scopeChain = [callbackEC_I.VO, globalEC.VO]`。
 
 編譯完成以後開始執行 `console.log(i)`，循著 callbackEC_I.scopeChain 尋找變數 i，最後在 globalEC.VO 裡找到了 i = 5，所以印出 5。
 
