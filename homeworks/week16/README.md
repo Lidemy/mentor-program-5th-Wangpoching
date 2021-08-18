@@ -99,7 +99,7 @@ hello() // ??
 
 事實上 this, hoisting 這些東西在實際開發上會用到的機會比較少，最常用到的是 class 與 closure 的觀念，這邊提供三個題目給大家練習：[Week16 練習題](https://github.com/Lidemy/mentor-program-4th/issues/16)，裡面有附上解答
 
-如果覺得題目不清楚，可以直接看測試檔會比較快
+如果覺得題目不清楚，可以直接看測試檔會比較快。
 
 ## 挑戰題
 
