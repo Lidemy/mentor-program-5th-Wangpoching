@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <section class="image__banner">
+    <h1>咬一口廚房</h1>
+  </section>
+  <div class="container-wrapper">
+    <div class="container">
+      <div class="edit-post">
+        <form action="/edit?id=<%= prize.id %>" method="POST" enctype="multipart/form-data">
+          <div class="edit-post__title">
+            編輯獎項：
+            <% if (errorMessage && errorMessage.length > 0) { %>
+              <span class="errmsg"><%= errorMessage %></span>
+            <% } %>
+          </div>
+          <div class="edit-post__input-wrapper">
+            <input name="name" class="edit-post__input" placeholder="請輸入文章標題" value="<%= prize.name %>"/>
+          </div>
+          <div class="edit-post__input-wrapper">
+            <textarea name="desc" rows="5" class="edit-post__content"><%= prize.desc %></textarea>
+          </div>
+          <img src="<%= prize.imageUrl %>" with="600" heigh="400" alt="一張圖片">
+          <div class="upload__input-wrppaer">
+            <label for="upload">選擇上傳圖檔：</label>
+            <input id="upload" type="file" name="upload" >
+          </div>
+          <div class="edit-post__btn-wrapper">
+            <a href="/admin" class="edit-post__btn">取消</a>
+            <input type="submit" class="edit-post__btn" value="送出" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
+</body>
+<script src="index.js"></script>
+<script>
+  // 清除錯誤訊息
+  const delegation = document.querySelector('.edit-post')
+  if (document.querySelector('.errmsg')) {
+    const errmsg = document.querySelector('.errmsg')
+    focusinRemoveErrmsg(delegation, errmsg)
+  }
+</script>
+</html>

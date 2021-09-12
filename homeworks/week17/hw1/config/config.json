@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "boching",
+    "password": "showgirlwang588",
+    "database": "blog",
+    "host": "week18.cvh1gtjf8id6.us-east-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "boching",
+    "password": "showgirlwang588",
+    "database": "blog",
+    "host": "week18.cvh1gtjf8id6.us-east-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "boching",
+    "password": "showgirlwang588",
+    "database": "blog",
+    "host": "week18.cvh1gtjf8id6.us-east-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  }
+}
+

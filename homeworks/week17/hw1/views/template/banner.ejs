@@ -1,0 +1,21 @@
+<section class="banner">
+  <div class="banner__wrapper">
+    <h1><%=  blogname || "Who's Blog"%></h1>
+    <%if (!blogname) { %>
+      <div>Build your own blog</div>
+    <% } else { %>
+      <div><%=  desc || "Build your own blog"%></div>
+    <% } %>
+    <% if (categories && categories.length) { %>
+      <div class="banner__category">
+      <% for (const category of categories) { %>
+        <% if (Number(categoryId) === Number(category.id)) { %>
+          <a class="active" href="<%= `http://blog.bocyun.tw/blog/${sitename}?categoryId=${category.id}` %>"><%= category.name %></a>
+        <% } else { %>
+          <a href="<%= `http://blog.bocyun.tw/blog/${sitename}?categoryId=${category.id}` %>"><%= category.name %></a>
+        <% } %>
+      <% } %>
+      </div>
+    <% } %>
+  </div>
+</section>

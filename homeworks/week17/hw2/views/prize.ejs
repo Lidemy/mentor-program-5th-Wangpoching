@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>餐廳官網-抽獎頁面</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./normalize.css">
+  <link rel="stylesheet" href="./prize.css">
+  <script src='./draw.js'></script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+  	<div class="navbar__wrapper">
+	  	<div class="navbar__site-name">Just A Bite!</div>
+	  	<div class="navbar__list">
+	  		<li class="active"><a href="#">抽個大獎</a></li>
+	  		<li><a href="#">我要點餐</a></li>
+	  		<li><a href="#">查詢訂單</a></li>
+	  		<li><a href="#">常見問題</a></li>
+        <% if (isLogin) { %>
+          <li><a href="/admin">管理後臺</a></li>
+          <li><a href="/logout">登出</a></li>
+        <% } %>
+	  	</div>
+	  </div>
+  </nav>
+
+  <section class="image__banner">
+  	<div class="lottery-ticket">
+  		<div class="lottery-title">2020 夏日輕盈特賞！ 抽獎活動辦法</div>
+  		<div class="lottery-duration">
+  			<div class="lottery-duration__title">活動期間：</div>
+  			<div class="lottery-duration__content">2020/06/01~2020/07/01</div>
+  		</div>
+  		<div class="lottery-illustration">
+  			<div class="lottery-illustration__title">活動說明：</div>
+  			<div class="lottery-illustration__content">今天老闆佛心來著決定給大家發獎勵，有看有機會，沒看只能幫QQ！只要在店內消費滿1000000元即有機會獲得 - 頭獎日本東京來回雙人遊！</div> 			
+  		</div>
+  		<div class="lottery-prize">
+  			<div class="lottery-prize__title">獎  品：</div>
+  			<div class="lottery-prize__content">❤ 頭獎一名：日本東京來回雙人遊(市價14990元) <br />
+❤ 貳獎三名：90 吋電視一台(市價5990元) <br />
+❤ 參獎十名：知名 YouTuber 簽名握手會入場券一張(市價1500元)</div> 			
+  		</div>
+  	</div>
+    <div class="lottery-button">點我抽獎</div>
+  </section>
+
+  <footer>
+  	<div class="footer__top">
+  		<div class="footer__topwrapper">
+  			<div class="footer__info">
+  				<div>餐館地址: 天上地下天堂路三分之一里六段 520 號</div>
+  				<div>訂位專線：02-1314-5566</div>
+  				<div>營業時間：週一〜週五 09:00~18:00 / 週六、週日、國定假日（含連假）休息</div>
+  				<div>email：service@justabite.com.tw</div>
+ 			</div>
+  			<div>
+  				<div class="footer__site">Just A Bite!</div>
+  				<div class="footer__link">
+  					<a href="#">Facebook</a>
+  					<div>/</div>
+ 					<a href="#">Instagram</a>
+ 					<div>/</div>
+  					<a href="#">Youtube</a>
+  				</div> 				
+ 			</div>
+  		</div>
+  	</div>
+  	<div class="footer__bottom">
+  		<div class="footer__bottomwrapper">
+  			<div>Copyright © 2020 Just A Bite All Rights Reserved.</div>
+  			<div>咬一口股份有限公司版權所有</div>
+  		</div>
+    </div>  	
+  </footer>
+</body>
+</html>

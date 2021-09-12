@@ -1,0 +1,30 @@
+<nav class="navbar">
+  <div class="wrapper navbar__wrapper">
+    <div class="navbar__site-name">
+      <a href="<%=`http://blog.bocyun.tw/blog/${sitename}`%>">Who's Blog</a>
+    </div>
+    <ul class="navbar__list">
+      <div>
+        <% if (mysite) { %>
+          <li><a <% if (navbarId === 1) { %> <%= 'class=active' %><% } %> href="http://blog.bocyun.tw/category">分類專區</a></li>
+          <li><a <% if (navbarId === 2) { %> <%= 'class=active' %><% } %> href="http://blog.bocyun.tw/admin">管理後台</a></li>
+        <% } %>
+        <li><a <% if (navbarId === 3) { %> <%= 'class=active' %><% } %> href="<%=`http://blog.bocyun.tw/about/${sitename}`%>">關於我</a></li>
+      </div>
+      <div>
+        <% if (username) { %>
+          <li class="navbar__dropdown"><a>Hi, <%= username %></a>
+            <ul>
+              <li><a href="http://blog.bocyun.tw/write">新增文章</a></li>
+              <li><a href="http://blog.bocyun.tw/setting">設定</a></li>
+              <li><a href="http://blog.bocyun.tw/logout">登出</a></li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li><a href="http://blog.bocyun.tw/login">登入</a></li>
+          <li><a href="http://blog.bocyun.tw/register">註冊</a></li>
+        <% } %>          
+      </div>
+    </ul>
+  </div>
+</nav>

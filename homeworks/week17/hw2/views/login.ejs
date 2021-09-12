@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar__wrapper">
+      <a class="navbar__site-name" href="/prize">Just A Bite!</a>
+      <div class="navbar__list">
+        <% if (isLogin) { %>
+          <li><a href="/admin">管理後臺</a></li>
+          <li><a href="/logout">登出</a></li>
+        <% } else { %>
+          <li><a href="/register">註冊</a></li>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <section class="image__banner">
+    <h1>管理後臺</h1>
+  </section>
+  <div class="login__wrapper">
+    <h2>Login</h2>
+    <% if (errorMessage && errorMessage.length > 0) { %>
+      <div class='errmsg'><%= errorMessage %></div>
+    <% } %>
+    <form action="login" method="POST">
+      <div class="input__wrapper">
+        <div class="input__label">USERNAME</div>
+        <input class="input__field" type="text" name="username" />
+      </div>
+      <div class="input__wrapper">
+        <div class="input__label">PASSWORD</div>
+      <input class="input__field" type="password" name="password" />
+      </div>
+      <input class='login-btn' type='submit' value="submit" />
+    </form>
+  </div>
+  <%- include('template/footer')%>
+</body>
+<script src="index.js"></script>
+<script>
+  // 清除錯誤訊息
+  const delegation = document.querySelector('.login__wrapper')
+  if (document.querySelector('.errmsg')) {
+    const errmsg = document.querySelector('.errmsg')
+    focusinRemoveErrmsg(delegation, errmsg)
+  }
+</script>
+</html>
