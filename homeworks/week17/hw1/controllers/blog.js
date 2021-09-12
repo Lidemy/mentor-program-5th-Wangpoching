@@ -316,7 +316,7 @@ const blogController = {
     const slicedArticles = articles.slice(offset, offset + limit) // 取出要 render 的文章
     // 如果頁數超過回到第一頁
     if (page > totalPage) {
-      return res.redirect(`/blog/${req.params.sitename}?page=1`)
+      return res.redirect(`/blog/${req.params.visitsite}?page=1`)
     }
     // render 的參數
     const renderParameter = {
