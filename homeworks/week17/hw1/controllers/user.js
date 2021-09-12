@@ -18,6 +18,7 @@ function sitenameGenerator(max) {
 const userController = {
   isLogin: (req, res, next) => {
     // 有登入
+    console.log('check')
     if (req.session.username) {
       return next()
     }
@@ -45,6 +46,7 @@ const userController = {
 
   checkLoginInput: (req, res, next) => {
     const { username, password } = req.body
+    console.log('username: ', username)
     if (!username || !password) {
       req.flash('errorMessage', '缺少必要欄位')
       return res.redirect('back')
