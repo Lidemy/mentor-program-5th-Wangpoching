@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     desc: DataTypes.STRING,
     imageUrl: DataTypes.STRING,
     deleteHash: DataTypes.STRING,
-    probability: DataTypes.FLOAT
+    weight: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Prize',
