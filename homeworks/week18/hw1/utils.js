@@ -9,7 +9,7 @@ const SES_CONFIG = {
   region: process.env.REGION
 }
 const { HASH_KEY, HASH_IV, MERCHANT_ID } = process.env
-const URL = 'https://getprize.bocyun.tw'
+const URL = 'https://just-a-bite.bocyun.tw'
 const PAYGATEWAY = 'https://ccore.spgateway.com/MPG/mpg_gateway' // 付款網址
 const RETURNURL = `${URL}/spgateway/callback?from=ReturnURL` // 支付完成返還商店網址
 const NOTIFYURL = `${URL}/spgateway/callback?from=NotifyURL` // 支付通知網址

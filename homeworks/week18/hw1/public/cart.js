@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
-  const CartGrossPrice = document.querySelector('.cart-grossprice')
-  const CartGrossPriceDeliveryFee = document.querySelector('.cart-grossprice-deliveryfee')
+  const CartGrossPrice = document.querySelector('.cart-grossprice span')
+  const CartGrossPriceDeliveryFee = document.querySelector('.cart-grossprice-deliveryfee span')
   function updateCartGrossPrice() {
     const grossPricePerGood = document.querySelectorAll('.grossprice')
     const accumulatedSum = Array.from(grossPricePerGood).reduce((sum, number) => {

@@ -629,8 +629,22 @@ const adminController = {
   },
 
   updateOrderInformation: async(req, res, next) => {
-    const { status, name, phone, mail, address, serial } = req.body
-    // 改為訂單取消
+    const { name, phone, mail, address, serial } = req.body
+    let { status } = req.body
+    const order = await Order.findOne({
+      where: {
+        serial
+      }
+    })
+    // 狀態沒改變直接返回
+    if (Number(order.status) === Number(status)) {
+      console.log('the same!!!')
+      return res.redirect('/admin-order')
+    }
+    // 訂單取消不能更改
+    if (Number(order.status) !== 1 && Number(order.status) !== 2) {
+      status = 3
+    }
     try {
       await sequelize.transaction(async(transaction) => {
         await Order.update({
@@ -645,6 +659,7 @@ const adminController = {
           },
           transaction
         })
+        // 改為訂單取消
         if (Number(status) === 3) {
           // 找出訂單
           const orderDetails = await OrderDetail.findAll({
@@ -672,7 +687,8 @@ const adminController = {
         }
       })
     } catch (err) {
-      req.flash('errorMessage', '編輯訂單失敗')
+      console.log(err)
+      req.flash('errorMessage', err)
       return res.redirect('back')
     }
     res.redirect('/admin-order')
@@ -740,7 +756,6 @@ const adminController = {
         return res.redirect('back')
       }
     })
-    console.log('save cart')
     next()
   },
 
@@ -1148,12 +1163,6 @@ const adminController = {
       req.flash('errorMessage', err.toString())
       return res.redirect('back')
     }
-    if (!orders.length) {
-      if (JSON.stringify(searchInput) === JSON.stringify({ userId })) {
-        return res.redirect('/index')
-      }
-      return res.redirect('/order')
-    }
     next()
   },
 
@@ -1161,7 +1170,7 @@ const adminController = {
     // 篩選條件
     const searchInput = {}
     const queryFilter = {}
-    const destination = req.headers.referer.indexOf('/admin-order?') < 0 ? '/admin-order' : '/admin-prize'
+    const destination = req.headers.referer.indexOf('/admin-order?') > 0 ? '/admin-order' : '/admin-prize'
     if ('serial' in req.query) {
       const { serial } = req.query
       searchInput.serial = serial
@@ -1254,12 +1263,20 @@ const adminController = {
     const { userId } = req.session
     let order
     try {
-      order = await Order.findOne({
-        where: {
-          serial,
-          userId
-        }
-      })
+      if (res.locals.isAdmin) {
+        order = await Order.findOne({
+          where: {
+            serial
+          }
+        })
+      } else {
+        order = await Order.findOne({
+          where: {
+            serial,
+            userId
+          }
+        })
+      }
       req.order = order
     } catch (err) {
       req.flash('errorMessage', err.toString())
@@ -1429,7 +1446,6 @@ const adminController = {
         })
       })
     } catch (error) {
-      console.log(error)
       req.flash('errorMessage', '系統錯誤，請洽客服人員')
       return res.redirect('/cart')
     }

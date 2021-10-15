@@ -70,14 +70,13 @@
             <td colspan="7"><div class="add-row"></div></td>
           </tr>
           <tr>
-            <td colspan="7" class="cart-grossprice">小計：$<%= totalPrice %></td>
+            <td colspan="7" class="cart-grossprice">小計：$<span><%= totalPrice %></span></td>
           </tr>
           <tr>
-            <td colspan="7"><span>購物滿 1000 免運! </span>運費：$<%= deliveryFee %></td>
+            <td colspan="7"><span class="notify">購物滿 1000 免運! </span>運費：$<%= deliveryFee %></td>
           </tr>
           <tr>
-            <td colspan="7" class="cart-grossprice-deliveryfee">總計：$
-              <%= totalPrice >= 1000? totalPrice:totalPrice + deliveryFee %>
+            <td colspan="7" class="cart-grossprice-deliveryfee">總計：$<span><%= totalPrice >= 1000? totalPrice:totalPrice + deliveryFee %></span>
             </td>
           </tr>
           </tbody>
@@ -98,10 +97,10 @@
           <div class="errmsg"><%= errorMessage %></div>
         <% } %>
         <div class="bill__info">
-          <div class="bill__info-content"><div>姓名*</div><input name="name" type="text" /></div>
-          <div class="bill__info-content"><div>連絡電話*</div><input name="phone" type="tel" /></div>
-          <div class="bill__info-content"><div>電子郵件*</div><input name="mail" type="email" /></div>
-          <div class="bill__info-content"><div>送餐地點*</div><input name="address" type="text" /></div>
+          <div class="bill__info-content"><div class="required">姓名</div><input name="name" type="text" /></div>
+          <div class="bill__info-content"><div class="required">連絡電話</div><input name="phone" type="tel" /></div>
+          <div class="bill__info-content"><div class="required">電子郵件</div><input name="mail" type="email" /></div>
+          <div class="bill__info-content"><div class="required">送餐地點</div><input name="address" type="text" /></div>
           <button class="button-upload">送出訂單</button>
         </div>
       </section>

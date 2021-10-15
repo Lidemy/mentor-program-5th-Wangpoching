@@ -39,7 +39,7 @@ window.addEventListener('load', () => {
   })
 })
 
-const apiUrl = 'https://getprize.bocyun.tw/lottery'
+const apiUrl = 'https://just-a-bite.bocyun.tw/lottery'
 const errorMsg = '系統不穩定，請再試一次'
 
 // call api

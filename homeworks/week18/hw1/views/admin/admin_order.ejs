@@ -14,7 +14,7 @@
     <section class="orders">
       <h2 class="orders__title">訂單後台</h2>
       <div class="search">
-        <form class="search-filter" action="/admin-order" method="get">
+        <form class="search-filter" action="/admin-order" method="get">       
           <input type="radio" name="status" value="1" id="filter1" <%= status === 1? 'checked':''%>><label for="filter1">訂單完成</label>
           <input type="radio" name="status" value="2" id="filter2" <%= status === 2? 'checked':''%>><label for="filter2">配送中</label>
           <input type="radio" name="status" value="3" id="filter3" <%= status === 3? 'checked':''%>><label for="filter3">訂單取消</label>
@@ -42,7 +42,7 @@
         <tbody>
         <% for (const order of orders) { %>
           <tr>
-            <td><a href="<%= `/admin-order?serial=${order.serial}` %>"><%= order.serial %></a></td>
+            <td><a href="<%= `/detail?serial=${order.serial}` %>"><%= order.serial %></a></td>
             <td><a href="<%= `/admin-order?uername=${order.User.username}` %>"><%= order.User.username %></a></td>
             <td><%= getTime(order.createdAt) %></td>
             <td><%= order.amount %></td>

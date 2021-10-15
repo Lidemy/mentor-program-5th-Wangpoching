@@ -13,12 +13,16 @@
     <div class= "order__wrapper">
       <section class="order">
         <h2 class="order__title">編輯訂單</h2>
-        <div class="order__number">訂單編號：CF200309125</div>
+        <div class="order__number">訂單編號：<%= order.serial %></div>
         <input type="hidden" name="serial" value="<%= order.serial %>" />
         <select name="status" class="order__status">
-          <option <%= order.staus === 1? 'selected':'' %> value="1">訂單完成</option>
-          <option <%= order.staus === 1? 'selected':'' %> value="2">配送中</option>
-          <option <%= order.staus === 1? 'selected':'' %> value="3">訂單取消</option>
+          <% if (Number(order.status) !== 1 && Number(order.status) !== 2) { %>
+            <option value="1" >訂單取消</option>
+          <% } else { %>
+            <option value="1" <%= Number(order.status) === 1 ? 'selected' : '' %> >訂單完成</option>
+            <option value="2" <%= Number(order.status) === 2 ? 'selected' : '' %> >配送中</option>
+            <option value="3" <%= Number(order.status) === 3 ? 'selected' : '' %> >訂單取消</option>
+          <% } %>
         </select>
         <hr>
         <table class="order__table">

@@ -155,7 +155,7 @@ h2 {
   padding: 5px;
 }
 
-.cart__table td span {
+.notify {
   color: #f47676;
 }
 
@@ -302,6 +302,13 @@ footer {
 
 .cart__table .hidden {
   display: none;
+}
+
+.required::after {
+  display: inline-block;
+  content: '*';
+  font-size: 5px;
+  color: #ff0000;
 }
 
 @media(max-width: 768px) {

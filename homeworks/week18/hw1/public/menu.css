@@ -220,8 +220,10 @@ h2 {
 }
 
 .dish__name {
+  font-weight: bold;
   font-size: 18px;
   color: #3f633c;
+  margin-top: 10px;
 }
 
 .dish__button {
