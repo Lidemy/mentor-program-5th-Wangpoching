@@ -97,8 +97,7 @@ h2 {
 
 .button-register {
   cursor: pointer;
-  margin-top: 42px;
-  margin-left: auto;
+  margin: 42px auto 0 auto;
   text-align: center;
   line-height: 46px;
   width: 32%;
