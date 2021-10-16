@@ -1,0 +1,45 @@
+<% 
+//tranform datetime format
+function getTime(date) {
+  // convert date to number and plus 8 hours
+  const ISOString = new Date(+date + 8 * 3600 * 1000).toISOString()
+  const formatYmd = `${ISOString.slice(0, 10)} ${ISOString.slice(11, 19)}`
+  return formatYmd
+} 
+%>
+
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <%- include('template/navbar')%>
+  <%- include('template/banner')%>
+  <div class="container-wrapper">
+    <div class="posts">
+      <article class="post">
+        <div class="post__header">
+          <div><%= article.title %></div>
+          <div class="post__actions">
+            <% if (mysite) { %>
+              <a class="post__action" href="/edit?id=<%= article.id %>">編輯</a>
+            <% } %>
+          </div>
+        </div>
+        <div class="post__info">
+          <span><%= getTime(article.createdAt) %><span>
+          <% if (article.Category)  { %>
+            <span>分類：<%= article.Category.name %></span>
+          <% } else { %>
+            <span>分類：未分類</span>              
+          <% } %>      
+        </div>
+        <div class="post__content"><%- article.content %></div>
+      </article>
+    </div>
+  </div>
+  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <%- include('template/navbar')%>
+  <%- include('template/banner')%>
+  <div class="container-wrapper">
+    <div class="container">
+      <article class="post">
+        <form action="/delete-category?id=<%= category.id %>" method="POST">
+          <div class="delete-post__title">
+            刪除分類以後所屬文章都會被刪除，是否確定刪除?
+          </div>
+          <div class="post__header">
+            <div><%= category.name %></div>
+          </div>
+          <div class="post__info">
+            <% 
+              let time = category.createdAt.toString().split(' ')
+              let timeEdit = [time[3], time[1], time[2], time[4]].join(' ')
+            %>
+            <%= timeEdit %>
+          </div>
+          <div class="edit-post__btn-wrapper">
+            <a href="/category" class="edit-post__btn">取消</a>
+            <input type="submit" class="edit-post__btn" value="確認刪除" />
+          </div>
+          <input type="hidden" name="csrfToken" value="<%= csrfToken %>" />
+          </form>
+      </article>
+    </div>
+  </div>
+  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
+</body>
+<script src="index.js"></script>
+</html>
+
+

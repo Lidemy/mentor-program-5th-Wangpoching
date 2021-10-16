@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+  <style>
+    .ck-editor__editable_inline {
+      min-height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('template/navbar')%>
+  <%- include('template/banner')%>
+  <div class="container-wrapper">
+    <div class="container">
+      <div class="edit-post">
+        <form action="/edit-about" method="POST">
+          <div class="edit-post__title">
+            編輯關於我：
+            <% if (errorMessage && errorMessage.length > 0) { %>
+              <span class="errmsg"><%= errorMessage %></span>
+            <% } %>
+          </div>
+          <div class="edit-post__input-wrapper">
+            <textarea id="editor" name="content" rows="20" class="edit-post__content"><% if (about) { %><%- about.content %> <% } %></textarea>
+          </div>
+          <div class="edit-post__btn-wrapper">
+            <input type="submit" class="edit-post__btn" value="送出" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
+</body>
+<script src="index.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
+<script>
+  let editor;
+  ClassicEditor
+    .create( document.querySelector( '#editor' ) )
+    .then( newEditor => {
+      editor = newEditor;
+      console.log( editor );
+    } )
+    .catch( error => {
+      console.error( error );
+    } );
+</script>
+<script>
+  // 清除錯誤訊息
+  const delegation = document.querySelector('.edit-post')
+  if (document.querySelector('.errmsg')) {
+    const errmsg = document.querySelector('.errmsg')
+    focusinRemoveErrmsg(delegation, errmsg)
+  }
+</script>
+</html>
