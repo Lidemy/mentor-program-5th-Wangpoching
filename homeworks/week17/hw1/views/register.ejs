@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <% if (mysite) { %>
+    <%- include('template/navbar')%>
+  <% } %>
+  <%- include('template/banner')%>
+  <div class="login-wrapper">
+    <h2>Register</h2>
+    <% if (errorMessage && errorMessage.length > 0) { %>
+      <div class='errmsg'><%= errorMessage %></div>
+    <% } %>
+    <form action="register" method="POST">
+      <div class="input__wrapper">
+        <div class="input__label">USERNAME</div>
+        <input class="input__field" type="text" name="username" />
+      </div>      
+      <div class="input__wrapper">
+        <div class="input__label">PASSWORD</div>
+        <input class="input__field" type="password" name="password" />
+      </div>
+      <input type='submit' value="submit" />
+      <div class='login_btn'><a href='login'>login</a></div>
+    </form>     
+  </div>
+  <%- include('template/footer')%>
+</body>
+<script src="index.js"></script>
+<script>
+  const delegation = document.querySelector('.login-wrapper')
+  const errmsg = document.querySelector('.errmsg')
+  focusinRemoveErrmsg(delegation, errmsg)
+</script>
+</html>

@@ -1,0 +1,106 @@
+<% 
+// url tempalte
+function generatePageUrl(page, categoryId) {
+  let template = `/blog/${sitename}?page=${page}`
+  if (categoryId) {
+    template += `&categoryId=${categoryId}`
+  }
+  return template
+}
+
+// tranform datetime format
+function getTime(date) {
+  // convert date to number and plus 8 hours
+  const ISOString = new Date(+date + 8 * 3600 * 1000).toISOString()
+  const formatYmd = `${ISOString.slice(0, 10)} ${ISOString.slice(11, 19)}`
+  return formatYmd
+} 
+%>
+
+<!doctype html>
+<html>
+<head>
+  <%- include('template/head')%>
+</head>
+
+<body>
+  <%- include('template/navbar')%>
+  <%- include('template/banner')%>
+  <div class="container-wrapper">
+    <div class="posts">
+      <% if (!articles.length) { %>
+        <article class="post">
+          <div class="post__header">
+            <div>指南</div>
+          </div>
+          <div class="post__info">
+            <%= new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'}) %>
+          </div>
+          <div class="post__content ellipsis-5">
+            * 左上角的 Logo 可以回到首頁
+            * 右上角可以管理自己的個人資料與狀態
+            * 在 Who's Blog 寫下屬於自己的第一篇文章吧
+          </div>
+        </article>
+      <%  } else { %>
+        <% for (const article of articles) { %>
+          <article class="post">
+            <div class="post__header">
+              <div><%= article.title %></div>
+            <% if (mysite) { %>
+              <div class="post__actions">
+                <a class="post__action" href="/edit?id=<%= article.id %>">編輯</a>
+              </div>
+            <% } %>
+            </div>
+            <div class="post__info">
+              <span><%= getTime(article.createdAt) %></span>
+              <% if (article.Category)  { %>
+                <span>分類：<%= article.Category.name%></span>
+              <% } else { %>
+                <span>分類：未分類</span>              
+              <% } %>
+            </div>
+            <div class="post__content ellipsis-5"><%- article.content %></div>
+            <a class="btn-read-more" href="<%= `http://blog.bocyun.tw/article/${sitename}?id=${article.id}`%>">READ MORE</a>
+          </article>
+        <% } %>
+      <% } %>
+    </div>
+    <div class="page-info">
+      <span>共有 <%= totalArticle %> 篇文章</span>
+      <span>第 <%= page %> 頁</span>
+    </div>
+    <div class="pagination_container">
+      <div class="pagination_buttons">
+        <a href="<%= generatePageUrl(1, categoryId) %>">第一頁</a>
+        <a href="<%= generatePageUrl(totalPage, categoryId) %>">最後一頁</a>
+      </div>
+      <ul class="pagination">
+      <%
+        const pagination = Math.ceil(page/pagesPerPagination)
+        const paginationOffset = (pagination - 1) * pagesPerPagination + 1;
+        const totalPagination = Math.ceil(totalPage/pagesPerPagination);
+      %>
+      <% if (pagination !== 1) { %>
+          <li><a href=<%= generatePageUrl(paginationOffset - pagesPerPagination, categoryId) %>>«</a><li>
+      <% } %>
+      <% for (let i = paginationOffset; i < (paginationOffset + pagesPerPagination); i++) { %>
+        <% if (i > totalPage) {
+          break
+        } %>
+        <% if (i === page) { %>
+          <li><a class="active" href="<%= generatePageUrl(i, categoryId) %>"><%= i %></a></li>
+        <% } else { %>
+          <li><a href="<%= generatePageUrl(i, categoryId) %>"><%= i %></a></li>
+        <% } %>        
+      <% } %>
+      <%  if (pagination < totalPagination) { %>
+          <li><a href="<%= generatePageUrl(paginationOffset + pagesPerPagination, categoryId) %>">»</a><li>
+      <% } %>
+      </ul>
+    </div>
+  </div>
+  <%- include('template/footer')%>
+</body>
+</html>
