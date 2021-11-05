@@ -638,7 +638,6 @@ const adminController = {
     })
     // 狀態沒改變直接返回
     if (Number(order.status) === Number(status)) {
-      console.log('the same!!!')
       return res.redirect('/admin-order')
     }
     // 訂單取消不能更改
@@ -687,7 +686,6 @@ const adminController = {
         }
       })
     } catch (err) {
-      console.log(err)
       req.flash('errorMessage', err)
       return res.redirect('back')
     }

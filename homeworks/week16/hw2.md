@@ -32,14 +32,13 @@ globalEC.VO = {
 
 ```
 
-接著把 ScopeChain 給設定，Scope Chain 是一個陣列，裡面儲存了 Execution Context 的 VO，GlobalEC 的 ScopeC hain 會長得像這樣：
+接著把 ScopeChain 給設定，Scope Chain 是一個陣列，裡面儲存了 Execution Context 的 VO，GlobalEC 的 Scope Chain 會長得像這樣：
 
 ```
 GlobalEC.scopeChain = [GlobalEC.VO]
-
 ```
 
-編譯完成以後進入執行階段，把 for 分解一下：
+編譯完成以後進入執行階段，把 for 語法糖分解一下：
 
 ```
 i = 0
