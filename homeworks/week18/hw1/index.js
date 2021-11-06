@@ -31,7 +31,10 @@ app.use(session({
   secret: process.env.SESSIONSECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true } // only https will set cookie
+  cookie: {
+    secure: true,
+    sameSite: 'none'
+  } // only https will set cookie
 }))
 app.use(bodyParser.urlencoded({ extended: false })) // parses urlencoded bodies
 app.use(bodyParser.json()) // enable json type response

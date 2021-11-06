@@ -14,7 +14,7 @@ const userController = {
     if (isLogin) {
       return next()
     }
-    // 沒登入直接跳到 render
+    // 沒登入直接跳到 renderck
     return res.redirect('/login')
   },
 
