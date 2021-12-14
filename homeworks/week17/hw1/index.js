@@ -36,6 +36,10 @@ app.use((req, res, next) => {
 })
 // set static resources route
 app.use(express.static(path.join(__dirname, 'public')))
+app.use((req, res, next) => {
+  res.header('Content-Security-Policy', "style-src-elem blog.bocyun.tw 'unsafe-inline'; script-src-elem blog.bocyun.tw cdn.ckeditor.com 'unsafe-inline'")
+  next()
+})
 
 // handle login/register/logout/setting
 app.get('/login', userController.isLogin, blogController.getAllCategoriesByUserId, userController.renderLogin)
