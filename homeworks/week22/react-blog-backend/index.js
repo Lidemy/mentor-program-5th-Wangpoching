@@ -1,0 +1,28 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const bearerToken = require('express-bearer-token')
+const ArticleController = require('./controllers/article')
+const UserController = require('./controllers/user')
+const auth = require('./middlewares/auth')
+
+const app = express()
+const port = 5007
+
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(bearerToken())
+app.get('/v1/register', auth.register)
+app.get('/v1/articles', ArticleController.getAllArticles)
+app.get('/v1/article', ArticleController.getArticle)
+app.use(auth.checkAuth)
+app.put('/v1/article', ArticleController.editArticle)
+app.post('/v1/article', ArticleController.writeArticle)
+app.get('/v1/csrf', ArticleController.getCsrfToken)
+app.delete('/v1/article', ArticleController.deleteArticle)
+app.put('/v1/user', UserController.editInfo)
+app.get('/v1/me', auth.getMe)
+app.listen(port, () => {
+  console.log(`React-blog app listening on port ${port}!`)
+})
