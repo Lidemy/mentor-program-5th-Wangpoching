@@ -1,0 +1,44 @@
+@import-normalize; /* bring in normalize.css styles */
+
+body {
+  margin: 0;
+  padding: 0px;
+  height: 100%;
+  font-family: "Noto Sans TC", Open-Sans, Arial;
+  font-weight: 400;
+  transition: all 0.5s linear 0s;
+  background-color: rgb(239, 242, 245);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input, textarea {
+  resize: none;
+}
+
+input, input[type="button"], input[type="submit"], input[type="file"], input[type="reset"], button, textarea, select {
+  font-family: "Noto Sans TC", Open-Sans, Arial;
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  appearance: none;
+  :focus {
+    outline: none;
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
