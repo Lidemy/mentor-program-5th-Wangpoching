@@ -1,5 +1,5 @@
 {
-  "name": "hw1",
+  "name": "week22",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "create-react-app": "^4.0.3"
+    "create-react-app": "^5.0.0"
   }
 }
+

@@ -1,1 +1,3 @@
 *.min.js
+**/models/*.js
+**/migrations/*.js
