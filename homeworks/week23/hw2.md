@@ -10,6 +10,8 @@
 
 底下是從 [React Flux](https://zh-hant.reactjs.org/blog/2014/07/30/flux-actions-and-the-dispatcher.html) 擷取的 Flux 資料流。
 
+![img](https://i.imgur.com/vse3Db3.png)
+
 我們可以看到存放 State 的地方被移出了 React views，統一存放在 Store。
 
 接著透過 dispatcher 調用 callback 與 Store 互動形成單向的資料流。
