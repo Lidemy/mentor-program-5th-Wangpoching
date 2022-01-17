@@ -40,6 +40,8 @@ action 會被交給有定義這個 action 處理方式的 reducer，除此之外
 
 ![img](https://i.imgur.com/DZxOnKt.png)
 
+補充: 不同的 reducer 可以處理同一個 action，一個 action 可能會更改到 store 的許多狀態，也是合情合理的。
+
 ### **產生新的 state**
 
 最後 reducer 會產生新的 state，也就是 `['Cook','Clean House']`，接著重新渲染畫面讓使用者知道已經順利新增 todo。
