@@ -920,7 +920,7 @@ Pre-build 的方法需要在 build server 的時候就決定好每個路由需�
 ### 工具
 
 * [Next.js](https://nextjs.org/): 使用 React 語法
-* [Nuxt.js](https://nextjs.org/): 使用 Nuxt 語法
+* [Nuxt.js](https://nextjs.org/): 使用 Vue 語法
 
 ## Dynamic Rendering
 
