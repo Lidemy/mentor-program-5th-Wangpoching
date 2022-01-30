@@ -1,5 +1,4 @@
 import styled from '@emotion/styled/macro'
-import { useCallback } from 'react'
 import { MEDIA_QUERY_MD } from '../../constants/breakpoints'
 import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../../constants/TodoFilters'
 import Filter from '../../containers/Filter'
@@ -37,10 +36,6 @@ const ClearCompletedButton = styled.button`
 `
 
 export default function FunctionColumn({ activeCount, clearCompleted }) {
-  const handleClearCompleted = useCallback(
-    () => {
-      clearCompleted()
-    }, [clearCompleted])
   const isOnlyItem = activeCount > 1
   return (
     <Container>
@@ -51,7 +46,7 @@ export default function FunctionColumn({ activeCount, clearCompleted }) {
         <Filter filter={SHOW_ACTIVE}>Completed</Filter>
       </FilterSwitcher>
       <ClearCompletedButton 
-        onClick={handleClearCompleted}
+        onClick={clearCompleted}
       >
         Clear completed
       </ClearCompletedButton>

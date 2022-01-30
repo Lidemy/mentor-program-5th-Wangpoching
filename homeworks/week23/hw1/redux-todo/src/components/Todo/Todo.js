@@ -1,7 +1,7 @@
-import styled from '@emotion/styled/macro';
-import { useState, useEffect, useCallback } from 'react';
+import styled from '@emotion/styled/macro'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { ThemeProvider } from '@emotion/react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 const Container = styled.li`
   position: relative;
@@ -157,10 +157,11 @@ function Todo({ todo, deleteTodo, editTodo, toggleTodo }) {
   const { id, isDone, content } = todo
   const [ inputValue, setInputValue ] = useState(content)
   const [ isEditMode, setIsEditModeMode ] = useState(false)
+  const inputRef = useRef()
 
   useEffect(() => {
     if (!isEditMode) return
-    document.querySelector('#editTodoBox').focus()
+    inputRef.current.focus()
   }, [isEditMode])
 
   const handleChangeTodoState = useCallback(
@@ -198,7 +199,7 @@ function Todo({ todo, deleteTodo, editTodo, toggleTodo }) {
         </Checkbox>
         {isEditMode? 
           <InputContent
-            id="editTodoBox"
+            ref={inputRef}
             value={inputValue} 
             onChange={handleChange}
             onKeyDown={(e) => {
