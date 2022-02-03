@@ -5,8 +5,7 @@ import {
   getArticles, 
   getArticle, 
   saveArticle as saveArticleAPI, 
-  deleteArticle as deleteArticleAPI, 
-  getCsrfToken 
+  deleteArticle as deleteArticleAPI
 } from '../WebAPI'
 
 const initialState = {
@@ -27,7 +26,6 @@ const initialState = {
   },
   singleArticle: {
     article: null,
-    csrfToken: null,
     loading: false,
     didInvalidate: false,
     error: null
@@ -71,27 +69,17 @@ export const fetchSingleArticle = createAsyncThunk('articles/fetchSingleArticle'
   return body.data
 })
 
-export const fetchCsrfToken = createAsyncThunk('articles/fetchCsrfToken', async (id) => {
-  const IdToken = await getIdToken(auth)
-  const res = await getCsrfToken(IdToken, id)
-  if (!res.ok) {
-    throw new Error('刪除文章發生問題')
-  }
-  const body = await res.json()
-  return body.data.csrfToken
-})
-
 export const deleteArticle = createAsyncThunk('articles/deleteArticle', async ({id, csrfToken}) => {
-  const IdToken = await getIdToken(auth)
-  const res = await deleteArticleAPI(IdToken, id, csrfToken)
+  const idToken = await getIdToken(auth)
+  const res = await deleteArticleAPI(idToken, id, csrfToken)
   if (!res.ok) {
     throw new Error('刪除文章發生問題')
   }
 })
 
 export const saveArticle = createAsyncThunk('articles/saveArticle', async ({id, articleTitle, contentToSave, plainContent, isEditingPage}) => {
-  const IdToken = await getIdToken(auth)
-  const res = await saveArticleAPI(IdToken, id, articleTitle, contentToSave, plainContent, isEditingPage)
+  const idToken = await getIdToken(auth)
+  const res = await saveArticleAPI(idToken, id, articleTitle, contentToSave, plainContent, isEditingPage)
   if (!res.ok) {
     if (isEditingPage) {
       throw new Error('編輯文章失敗')
@@ -139,14 +127,12 @@ const manyArticlesReucer = (state = {
 
 const singleArticleReucer = (state = {
     article: null,
-    csrfToken: null,
     loading: false,
     didInvalidate: false,
     error: null
   }, action) => {
   switch (action.type) {
     case fetchSingleArticle.pending().type:
-    case fetchCsrfToken.pending().type:
     case deleteArticle.pending().type:
     case saveArticle.pending().type:
       return {
@@ -161,17 +147,9 @@ const singleArticleReucer = (state = {
         didInvalidate: false,
         article: action.payload
       }
-    case fetchCsrfToken.fulfilled().type:
-      return {
-        ...state,
-        loading: false,
-        didInvalidate: false,
-        csrfToken: action.payload
-      }
     case deleteArticle.fulfilled().type:
       return {
         article: null,
-        csrfToken: null,
         loading: false,
         didInvalidate: false,
         error: null
@@ -182,7 +160,6 @@ const singleArticleReucer = (state = {
         loading: false
       }
     case fetchSingleArticle.rejected().type:
-    case fetchCsrfToken.rejected().type:
     case deleteArticle.rejected().type:
     case saveArticle.rejected().type:
       return {
@@ -256,10 +233,6 @@ const articlesSlice = createSlice({
         isAnyOf(
           fetchSingleArticle.pending,
           fetchSingleArticle.fulfilled,
-          fetchSingleArticle.rejected,
-          fetchCsrfToken.pending,
-          fetchCsrfToken.fulfilled,
-          fetchCsrfToken.rejected,
           deleteArticle.pending,
           deleteArticle.fulfilled,
           deleteArticle.rejected,

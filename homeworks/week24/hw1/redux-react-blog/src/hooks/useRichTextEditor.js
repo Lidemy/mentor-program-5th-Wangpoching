@@ -53,7 +53,7 @@ const renderListIcon = (type) => {
   )  
 }
 
-export const useRichTextEditor = () => {
+const useRichTextEditor = () => {
 
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty()

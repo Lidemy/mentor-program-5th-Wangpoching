@@ -85,9 +85,9 @@ function Menu({ showMenu, setShowMenu }) {
   const handleCloseMenu = (e) => {
     setShowMenu(false)
   }
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setShowMenu(false)
-    await dispatch(logout())
+    dispatch(logout())
   }
 
   return (

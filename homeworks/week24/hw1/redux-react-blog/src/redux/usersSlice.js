@@ -25,9 +25,9 @@ const initialState = {
 
 export const register = createAsyncThunk('users/register', async ({email, password, name}) => {
   const user = await createUserWithEmailAndPassword(auth, email, password, name)
-  const IdToken = await getIdToken(auth)
+  const idToken = await getIdToken(auth)
   try {
-    const res = await normalRegister(IdToken, name)
+    const res = await normalRegister(idToken, name)
     if (!res.ok) {
       throw new Error('註冊失敗')
     }
@@ -50,9 +50,9 @@ export const logout = createAsyncThunk('users/logout', async () => {
 
 export const googleSignIn = createAsyncThunk('users/googleSignIn', async (args, thunkAPI) => {
   const user = await signInWithPopup(auth, googleAuthProvider)
-  const IdToken = await getIdToken(auth)
+  const idToken = await getIdToken(auth)
   try {
-    const res = await thirdPartyRegister(IdToken)
+    const res = await thirdPartyRegister(idToken)
     if (!res.ok) {
       throw new Error('登入失敗')
     }
@@ -64,8 +64,8 @@ export const googleSignIn = createAsyncThunk('users/googleSignIn', async (args, 
 })
 
 const getAboutMe = createAsyncThunk('users/getAboutMe', async (args, thunkAPI) => {
-  const IdToken = await getIdToken(auth)
-  const res = await getMe(IdToken)
+  const idToken = await getIdToken(auth)
+  const res = await getMe(idToken)
   if (!res.ok) {
     throw new Error('取得個人資料失敗')
   }
@@ -74,8 +74,8 @@ const getAboutMe = createAsyncThunk('users/getAboutMe', async (args, thunkAPI) =
 })
 
 export const editAboutMe = createAsyncThunk('users/editAboutMe', async (descriptionInput, thunkAPI) => {
-  const IdToken = await getIdToken(auth)
-  const res = await editMe(IdToken, descriptionInput)
+  const idToken = await getIdToken(auth)
+  const res = await editMe(idToken, descriptionInput)
   if (!res.ok) {
     throw new Error('更新個人資料失敗')
   }

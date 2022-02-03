@@ -139,18 +139,9 @@ function ArticlePage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const handleGetCsrfToken = useCallback(
-    async () => {
-      if (!csrfToken) {
-        try {
-          await dispatch(fetchCsrfToken(id)).unwrap()
-        } catch (err) {
-          alert('刪除文章發生問題')
-          return
-        }
-      }
-      setShowReminder(true)
-    }, [id, csrfToken, dispatch]
+  const handleClickDeleteBtn = useCallback(() => {
+      setShowReminder(true)  
+    }, []
   )
 
   const handleDeleteArticle = useCallback(
@@ -166,7 +157,6 @@ function ArticlePage() {
       }    
     }, [id, navigate, dispatch]
   )
-
   useEffect(() => {
     scrollTop()
     const fetchArticle = async () => {
@@ -204,7 +194,7 @@ function ArticlePage() {
                   <ArticleEdit to={`/edit/${article.id}`}>
                     編輯
                   </ArticleEdit>
-                  <ArticleDelete onClick={handleGetCsrfToken}>
+                  <ArticleDelete onClick={handleClickDeleteBtn}>
                     刪除
                   </ArticleDelete>
                 </ArticleToolBar>

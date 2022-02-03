@@ -31,7 +31,7 @@ function ArticlesPage() {
     }
     scrollTop()
     getArticles()
-  }, [currentPage, navigate, dispatch])
+  }, [navigate, dispatch])
   
   return(
     <Wrapper>
