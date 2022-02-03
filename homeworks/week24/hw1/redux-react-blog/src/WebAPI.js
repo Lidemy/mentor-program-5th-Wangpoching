@@ -2,22 +2,22 @@ import qs from 'qs'
 
 const BASE_URL = 'https://react-blog.bocyun.tw/v1'
 
-export const thirdPartyRegister = async (IdToken) => {
+export const thirdPartyRegister = async (idToken) => {
   return await fetch(`${BASE_URL}/register`, {
     headers: {
-      'authorization': `Bearer ${IdToken}`
+      'authorization': `Bearer ${idToken}`
     }
   })
 }
 
-export const normalRegister = async (IdToken, name) => {
+export const normalRegister = async (idToken, name) => {
   const queryString = {
     type: 'password',
     name
   }
   return await fetch(`${BASE_URL}/register?${qs.stringify(queryString)}`, {
     headers: {
-      Authorization: `Bearer ${IdToken}`
+      Authorization: `Bearer ${idToken}`
     }
   })
 }
@@ -38,12 +38,12 @@ export const getArticle = async (id) => {
   return await fetch(`${BASE_URL}/article?${qs.stringify(queryString)}`)
 }
 
-export const saveArticle = async (IdToken, id, title, contentToSave, plainContent, isEdit) => {
+export const saveArticle = async (idToken, id, title, contentToSave, plainContent, isEdit) => {
   return await fetch(`${BASE_URL}/article`, {
     method: isEdit ? 'PUT' : 'POST',
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${IdToken}`,
+      Authorization: `Bearer ${idToken}`,
     },
     body: JSON.stringify({
       id,
@@ -54,12 +54,29 @@ export const saveArticle = async (IdToken, id, title, contentToSave, plainConten
   })
 }
 
-export const deleteArticle = async (IdToken, id, csrfToken) => {
+const getCsrfToken = async (idToken, id) => {
+  const queryString = {
+    id
+  }
+  const res = await fetch(`${BASE_URL}/csrf?${qs.stringify(queryString)}`, {
+    headers: {
+      Authorization: `Bearer ${idToken}`
+    },      
+  })
+  if (!res.ok) {
+    throw new Error('get csrfToken failed')
+  }
+  const body = await res.json()
+  return body.data.csrfToken
+}
+
+export const deleteArticle = async (idToken, id) => {
+  const csrfToken = await getCsrfToken(idToken, id)
   return await fetch(`${BASE_URL}/article`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${IdToken}`
+      Authorization: `Bearer ${idToken}`
     },
     body: JSON.stringify({
       id,
@@ -68,31 +85,20 @@ export const deleteArticle = async (IdToken, id, csrfToken) => {
   })
 }
 
-export const getCsrfToken = async (IdToken, id) => {
-  const queryString = {
-    id
-  }
-  return await fetch(`${BASE_URL}/csrf?${qs.stringify(queryString)}`, {
-    headers: {
-      Authorization: `Bearer ${IdToken}`
-    },      
-  })
-}
-
-export const getMe = async (IdToken) => {
+export const getMe = async (idToken) => {
   return await fetch(`${BASE_URL}/me`, {
     headers: {
-      Authorization: `Bearer ${IdToken}`
+      Authorization: `Bearer ${idToken}`
     }
   })
 }
 
-export const editMe = async (IdToken, description) => {
+export const editMe = async (idToken, description) => {
   return await fetch(`${BASE_URL}/user`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${IdToken}`
+      Authorization: `Bearer ${idToken}`
     },
     body: JSON.stringify({
       description

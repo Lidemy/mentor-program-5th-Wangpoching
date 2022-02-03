@@ -53,7 +53,7 @@ function SearchPage() {
       }
     }
     searchArticlesByKeyword()
-  }, [currentPage, keyword, navigate, dispatch])
+  }, [keyword, navigate, dispatch])
 
   return(
     <Wrapper>
