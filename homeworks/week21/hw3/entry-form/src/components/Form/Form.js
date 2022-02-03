@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
-import { ThemeProvider } from '@emotion/react'
-import useFormApi from '../../API/useFormApi'
+import useForm from '../../API/useForm'
 
 const FormContainer = styled.div`
   padding: 0 0 40px 0;
@@ -106,8 +105,8 @@ const Alert = styled.p`
 
 export default function Form() {
 
-  const [formContent, handleInputChange, handleSubmit] = useFormApi()
-
+  const [ formContent, handleInputChange, handleSubmit ] = useForm()
+  const { username, email, phoneNumber, type, howToKnow, other } = formContent
   return (
     <FormContainer className={'form__wrapper'}>
       <Top />
@@ -124,7 +123,7 @@ export default function Form() {
           type="text" 
           placeholder="您的回答" 
           name="username"
-          value={formContent.username}
+          value={username}
           onChange={handleInputChange}
         />
       </InputContainer>
@@ -136,7 +135,7 @@ export default function Form() {
           type="text" 
           placeholder="您的電子郵件" 
           name="email"
-          value={formContent.email}
+          value={email}
           onChange={handleInputChange}
         />
       </InputContainer>
@@ -144,11 +143,11 @@ export default function Form() {
       <InputContainer className={'phone-number__wrapper'}>
         <TextLabel htmlFor="phone-number" $required={true}>手機號碼</TextLabel>
         <TextInput 
-          id="phone-number" 
+          id="phone-number"
           type="text" 
           placeholder="您的手機號碼" 
           name="phoneNumber"
-          value={formContent.phoneNumber}
+          value={phoneNumber}
           onChange={handleInputChange}
         />
       </InputContainer>
@@ -157,10 +156,11 @@ export default function Form() {
         <RadioTitle>報名類型</RadioTitle>
         <div>
           <RadioInput
-            id="type-one" 
+            id="type-one"
             type="radio"
-            name="typeOne"
-            checked={formContent.type.typeOne}
+            name="type"
+            value="1"
+            checked={type === '1'}
             onChange={handleInputChange}
           />
           <RadioLabel htmlFor="type-one">躺在床上用想像力實作</RadioLabel>
@@ -169,8 +169,9 @@ export default function Form() {
           <RadioInput
             id="type-two" 
             type="radio"
-            name="typeTwo"
-            checked={formContent.type.typeTwo}
+            name="type"
+            value="2"
+            checked={type === '2'}
             onChange={handleInputChange}
           />
           <RadioLabel htmlFor="type-two">趴在地上滑手機找現成的</RadioLabel>
@@ -184,7 +185,7 @@ export default function Form() {
           type="text" 
           placeholder="您的回答" 
           name="howToKnow"
-          value={formContent.howToKnow}
+          value={howToKnow}
           onChange={handleInputChange}
         />
       </InputContainer>
@@ -197,7 +198,7 @@ export default function Form() {
           type="text" 
           placeholder="您的回答" 
           name="other"
-          value={formContent.other}
+          value={other}
           onChange={handleInputChange}
         />
       </InputContainer>

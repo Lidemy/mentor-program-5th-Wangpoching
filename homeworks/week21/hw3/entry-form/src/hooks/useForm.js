@@ -1,37 +1,22 @@
 import { useState } from 'react'
 
-export default function useFormApi() {
+export default function useForm() {
 
   const [formContent, setFormContent] = useState({
     username: '',
     email: '',
     phoneNumber: '',
-    type: {
-      typeOne: false,
-      typeTwo: false,
-    },
+    type: '1',
     howToKnow: '',
     other: ''
   })
 
   const handleInputChange = (e) => {
     const { target } = e
-    const { name } = target
-    const { type, value } = target
-    if (type !== 'radio') {
-      setFormContent({
-        ...formContent,
-        [name]: value
-      })
-      return
-    }
-    const newType = {
-      [name]: target.checked,
-      [name === 'typeOne' ? 'typeTwo' : 'typeOne']: !target.checked
-    }
+    const { name, value} = target
     setFormContent({
       ...formContent,
-      type: newType
+      [name]: value
     })
   }
 
@@ -74,6 +59,8 @@ export default function useFormApi() {
       alert(result.errorMessage.join('\r\n'))
       return
     }
+    alert(formContent.username)
+    alert(formContent.type)
     alert('我們已收到您的報名資訊')
   }
 
