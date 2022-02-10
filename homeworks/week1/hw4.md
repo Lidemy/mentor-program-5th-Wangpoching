@@ -1,13 +1,13 @@
-## 跟你朋友介紹 Git
+# 甚麼是 Git
 如果想了解 Git，首先得知道它是拿來做版本控制的一套軟體。
 
 大部分的人一定都做過版本控制，比如說研究生在寫論文時，會有很多個版本，除了自己有許多個版本以外，指導老師也會提供意見修改，最後研究生可能會希望保留修改的每一個版本，並且把指導老師修改過的版本與自己的最新版本作合併。
 
 我們以研究生寫論文的例子來看看，Git 可以如何幫我們做版本控制。
 
-### Git 基本操作
+## Git 基本操作
 
-#### git init
+### git init
 
 首先，在終端機輸入：
 ```cmd
@@ -21,7 +21,7 @@ git init
 
 ![img](https://i.imgur.com/2uaxE9Z.png)
 
-#### git status
+### git status
 
 現在想要確定一下目前版本控制檔案的狀態，在終端機輸入：
 ```cmd
@@ -32,7 +32,7 @@ git status
 
 我們可以發現 thesis 這個檔案沒有被 Git 給追蹤 (tracked)，所以我們必須先將 thesis 讓 Git 追蹤，這樣一來如果之後 thesis 有任何改動都會被記錄下來。
 
-#### git add
+### git add
 
 選擇將論文的初稿加入版本控制，在終端機輸入：
 ```cmd
@@ -50,7 +50,7 @@ git status
 
 **提交**可以想像成為當前被版本控制的檔案做一次快照 (Snapshot)，這麼一來如果某一天在論文快完成的時候想要看剛開始的版本，便可以透過切換 commit 來達成。
 
-#### git commit
+### git commit
 
 接著要把剛剛 add 進來的檔案提交給 Git，在終端機輸入：
 ```cmd
@@ -59,7 +59,7 @@ git commit -am "student first commit"
 
 在這次的 commit 訊息寫上 `student first commit`方便未來知道這是研究生第一次提交的版本。
 
-#### git log
+### git log
 
 在完成快照以後，可以在終端機輸入：
 ```cmd
@@ -70,7 +70,7 @@ git log
 
 透過 git log 可以查看所有的 commit，其中 `2c5a15c2fe86f46e29566ee3f897e4458267e79d` 代表的是這個 commit 的流水號
 
-#### git diff
+### git diff
 
 如果幾天當研究生校稿時，發現第一個字沒有大寫，因此將字首改成大寫以後完成第二版。
 這時候可以先確認兩個版本的差別。
@@ -84,7 +84,7 @@ git diff
 
 上面可以看到被改動的地方。
 
-#### git status
+### git status
 
 在 add 前我們還是使用 git status 檢查一下。
 
@@ -100,7 +100,7 @@ git status
 這個原因是因為前面就已經 ```git add thesis``` 過了，但即使 Git 已經可以追蹤到 thesis 發生改變，我們仍然需要透過 ```git add thesis``` 告訴 Git，我們想要將這個改動給 commit。
 
 
-#### 第二次 git add & git commit
+### 第二次 git add & git commit
 
 確認沒有問題以後，重複上面的步驟，在終端機輸入：
 ```
@@ -109,9 +109,9 @@ git commit -am "student second commit"
 
 值得注意的是這邊可以不用再輸入 git add thesis，因為 git commit 的 -am 便包含了 add 以及 commit 的功能，但是要小心如果有新增檔案或是刪除檔案的異動還有要先 git add 再 git commit 才行。
 
-### Git branch
+## branch
 
-#### 為甚麼要有 branch 的概念
+### 為甚麼要有 branch 的概念
 
 接著要談到 branch ， branch 的中文是分支。
 
@@ -138,7 +138,7 @@ git commit -am "student second commit"
 ![img](https://i.imgur.com/d32Ma8U.png)
 
 
-#### Git branch branchName 創建新的分支/ Git checkout branchName 在分之間遊走
+### Git branch branchName 創建新的分支/ Git checkout branchName 在分之間遊走
 
 現在假設研究生將第二個版本拿給指導老師改，那麼指導老師會新開一個 branch 來做修改。
 
@@ -163,7 +163,7 @@ git branch -v
 
 ![img](https://i.imgur.com/peCXHlT.png)
 
-#### 在新的分支 commit
+### 在新的分支 commit
 
 指導教授覺得用驚嘆號比較有氣勢，教授修改以後將修改後的版本提交給 Git 版本控制，在終端機輸入：
 ```
@@ -189,9 +189,9 @@ master 是研究生自己初始的 branch 的名稱，合併完成以後可以�
 git branch -d teacher
 ```
 
-### Github (git push & git pull)
+## Github (git push & git pull)
 
-#### git remote add
+### git remote add
 
 剛剛拿來給 Git 做版本控制的資料夾叫作一個 repository (倉庫)，Github 就是一個 Github 公司提供的空間讓我們可以把很多 repository 給放在上面。
 
@@ -202,7 +202,7 @@ git branch -d teacher
 git remote add origin [url]
 ```
 
-#### git push
+### git push
 
 在 url 的地方輸入 repository 的所在位置，現在本機端以及遠端的橋樑已經建立好了，接著要把本地的 master branch 給放到遠端，在終端機輸入：
 ```
@@ -216,7 +216,7 @@ git push -u origin master
 
 ![img](https://i.imgur.com/mLWHwsI.png)
 
-#### git pull
+### git pull
 
 那麼本機端的 thesis 會新增這個改動嗎? 答案是不會，此時在終端機輸入：
 ```
@@ -232,7 +232,7 @@ This is my thesis!
 2022/2/11
 ```
 
-### 複習
+## 複習
 
 最後複習學到的 Git 指令
 
@@ -248,11 +248,11 @@ This is my thesis!
 * git branch -d [branchName]：刪除特定的 branch
 * git branch -v：查看所有的 branch
 
-### 補充
+## 補充
 
 上面提到的都只是 Git 的滄海一粟，所以最後再補充一些常常遇到的狀況。
 
-#### commit 了但是 commit message 打錯了
+### commit 了但是 commit message 打錯了
 
 ```cmd
 git commit --amend
@@ -260,7 +260,7 @@ git commit --amend
 
 此時會進入 vim 編輯器，修改 commit message 內容存檔後就改成功啦!
 
-#### commit 以後又反悔了
+### commit 以後又反悔了
 
 ```cmd
 git reset Head^
@@ -290,7 +290,7 @@ git checkout 除了可以在 branch 間游移，也可以在 commit 間游移。
 如果看不太懂 git checkout 與 git reset 的區別，可以參考[這篇文章](https://www.maxlist.xyz/2020/05/03/git-reset-checkout/)
 。
 
-#### 我不想讓 Git 追蹤檔案了
+### 我不想讓 Git 追蹤檔案了
 
 如果新增一個檔案，我們會使用：
 ```cmd
@@ -305,7 +305,7 @@ git rm --cached [filename]
 
 如此一來不論怎麼改 Git 都不知道了。
 
-#### 我還沒 commit，但我改的東西我不想要了
+### 我還沒 commit，但我改的東西我不想要了
 
 有時候已經把改動的檔案 git add 以後才發現內容有錯，想要反悔再重新修改檔案怎麼辦?
 
@@ -322,7 +322,7 @@ git checkout -- [filename]
 2. 切換 commit
 3. 回復檔案狀態
 
-#### 改 branch 的名字
+### 改 branch 的名字
 
 這個狀況是常常手殘打錯 branch 的名字怎麼辦?
 
@@ -332,7 +332,7 @@ git checkout -- [filename]
 git branch -m [newBranchName]
 ```
 
-#### 看到別人 github 上的專案好棒，想拿到自己的本地端
+### 看到別人 github 上的專案好棒，想拿到自己的本地端
 
 在開源的程式碼中，你可能為了協助開發而需要把專案從 gitHub 上抓下來，這時候可以在終端機輸入：
 
