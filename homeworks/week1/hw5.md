@@ -71,7 +71,7 @@ Loving him was red
 
 #### 常用的 options
 ---------------------------
-1. **-n** （沉默模式）
+1. **-n（沉默模式）** 
 注意在沉默模式下，不會打印出結果。
 
 ```cmd
@@ -80,7 +80,7 @@ sed -n 's/him/her/1' red.txt
 
 ![Imgur](https://i.imgur.com/wrbANHB.jpg)
 
-2. **-e** （編輯模式）
+2. **-e （編輯模式）**
 
 注意編輯模式只會打印結果，不會修改原始檔案，並且如果沒有輸入 option，-e 是預設的。
 
@@ -90,7 +90,7 @@ sed -e 's/him/her/1' red.txt
 
 ![Imgur](https://i.imgur.com/L6xEvvR.jpg)
 
-3. **-f**（讀取檔案腳本）
+3. **-f（讀取檔案腳本）**
 
 注意這個模式會讀取存放在檔案中的 sed 程式腳本然後打印出來。
 現在假設寫一個腳本 sed_command.txt，內容是
@@ -107,7 +107,7 @@ sed -f sed_command.txt red.txt
 
 ![Imgur](https://i.imgur.com/xFeaQ2d.jpg)
 
-4. **-i**（修改模式）
+4. **-i（修改模式）**
 
 注意 cat 出來的 red.txt 檔案裡每一行的第一個的 `him` 已經被取代成 `her`了，原始檔案被改變了。
 註： 之後的範例還是維持原始的 red.txt 檔，也就是說做了一次 `sed -i 's/her/him/1' red.txt` 讓檔案恢復原狀。
