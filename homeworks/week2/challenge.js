@@ -7,6 +7,8 @@ function search(arr,n) {
 	var start = 0
 	var end = arr.length-1
 	var half = Math.floor((start+end)/2) // 二分點的 index
+	if (n === arr[0]) return 0
+	if (n === arr[arr.length - 1]) return arr.length - 1
 	while (true){
 		if (arr[half] === n){ //如果二分點的數值就是目標就結束搜尋
 			return half
