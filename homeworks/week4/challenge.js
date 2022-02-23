@@ -5,51 +5,46 @@ const Accept = 'application/vnd.twitchtv.v5+json'
 const Client = 'xkypa7ouwlhjupibscd4mk8lhwgtgk'
 const BASE_URL = 'https://api.twitch.tv/kraken'
 
-function getStreams(name, callback) {
-  const url = `${BASE_URL}/streams/?game=${name}&limit=100&offset=0`
-  request({
-    url,
-    headers: {
-      Accept,
-      'Client-ID': Client
-    }
-  }, callback)
+function handleGetStreams(name, num) {
+  const limit = 100
+  let offset = 0
+  const streams = []
+
+  function getStreams() {
+    offset += 100
+    const url = `${BASE_URL}/streams/?game=${name}&limit=${limit}&offset=${offset}`
+    request({
+      url,
+      headers: {
+        Accept,
+        'Client-ID': Client
+      }
+    }, (err, res, body) => {
+      if (err) {
+        return console.log(err)
+      }
+      let info
+      try {
+        info = JSON.parse(body)
+      } catch (err) {
+        console.log(err)
+        return
+      }
+      if (streams.length > num) {
+        for (let i = 0; i < info.streams.length; i++) {
+          streams.push(info.streams[i])
+        }
+      } else {
+        const slicedStreams = streams.slice(0, num)
+        for (let i = 0; i < slicedStreams.length; i++) {
+          console.log(slicedStreams[i].channel.name, slicedStreams[i].viewers)
+        }
+        getStreams()
+      }
+    })
+  }
+
+  getStreams()
 }
 
-getStreams(process.argv[2], (err, res, body) => {
-  if (err) {
-    return console.log(err)
-  }
-  let info
-  try {
-    info = JSON.parse(body)
-  } catch (err) {
-    console.log(err)
-    return
-  }
-  for (let i = 0; i < info.streams.length; i++) {
-    console.log(info.streams[i].channel.name, info.streams[i].viewers)
-  }
-  const url = `${BASE_URL}/streams/?game=${process.argv[2]}&limit=100&offset=101`
-  request({
-    url,
-    headers: {
-      Accept,
-      'Client-ID': Client
-    }
-  }, (err, res, body) => {
-    if (err) {
-      return console.log(err)
-    }
-    let info
-    try {
-      info = JSON.parse(body)
-    } catch (err) {
-      console.log(err)
-      return
-    }
-    for (let i = 0; i < info.streams.length; i++) {
-      console.log(info.streams[i].channel.name, info.streams[i].viewers)
-    }
-  })
-})
+handleGetStreams(process.argv[2], 200)

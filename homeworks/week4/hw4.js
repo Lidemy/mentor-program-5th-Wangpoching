@@ -8,10 +8,12 @@ const options = {
   }
 }
 
-function infoParser(error, response, body) {
+request(options, (error, response, body) => {
   if (error) {
     console.log(error)
-  } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+    return
+  }
+  if (response.statusCode >= 200 && response.statusCode < 300) {
     let info
     try {
       info = JSON.parse(body)
@@ -22,7 +24,7 @@ function infoParser(error, response, body) {
     for (let i = 0; i < info.top.length; i++) {
       console.log(`${info.top[i].viewers} ${info.top[i].game.name}`)
     }
+    return
   }
-}
-
-request(options, infoParser)
+  console.log(body)
+})

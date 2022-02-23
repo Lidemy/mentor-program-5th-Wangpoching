@@ -34,6 +34,8 @@ request(
       if (countries.message === 'Not Found') {
         console.log('Can not find any country.')
       }
+    } else {
+      console.log('Something went wrong.')
     }
   }
 )

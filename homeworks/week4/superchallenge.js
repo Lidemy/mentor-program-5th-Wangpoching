@@ -20,7 +20,7 @@ function list() {
         return
       }
       for (let i = 0; i < books.length; i++) {
-        console.log(`${i + 1} ${books[i].name}`)
+        console.log(`${books[i].id} ${books[i].name}`)
       }
     })
   })

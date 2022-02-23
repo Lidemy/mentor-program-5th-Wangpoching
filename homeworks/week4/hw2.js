@@ -1,153 +1,188 @@
+const BASE_URL = 'https://lidemy-book-store.herokuapp.com'
 const request = require('request')
 const process = require('process')
 
-function list() {
-  request(
-    'https://lidemy-book-store.herokuapp.com/books?_limit=20',
-    (error, response, body) => {
-      if (error) {
-        console.log(error)
-      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        let books
-        try {
-          books = JSON.parse(body)
-        } catch (err) {
-          console.log(err)
-          return
-        }
-        for (let i = 0; i < books.length; i++) {
-          console.log(`${books[i].id} ${books[i].name}`)
-        }
-      }
+function getBooks(n) {
+  request(`${BASE_URL}/books?_limit=${n}`, (error, response, body) => {
+    if (error) {
+      console.log(error)
+      return
     }
-  )
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      let books
+      try {
+        books = JSON.parse(body)
+      } catch (error) {
+        console.log(error)
+        return
+      }
+      for (const value of books) {
+        console.log(`${value.id} ${value.name}`)
+      }
+      return
+    }
+    console.log('something went wrong')
+  })
 }
 
 function getBook(id) {
-  request(
-    `https://lidemy-book-store.herokuapp.com/books/${id}`,
-    (error, response, body) => {
-      if (error) {
+  request(`${BASE_URL}/books/${id}`, (error, response, body) => {
+    if (error) {
+      console.log(error)
+      return
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      let book
+      try {
+        book = JSON.parse(body)
+        console.log(`${book.id} ${book.name}`)
+        return
+      } catch (error) {
         console.log(error)
-      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        let book
-        try {
-          book = JSON.parse(body)
-        } catch (err) {
-          console.log(err)
-          return
-        }
-        if (book.name) {
-          console.log(`${book.name}`)
-        } else {
-          console.log('book does not exist')
-        }
+        return
       }
     }
-  )
+    if (response.statusCode === 404) {
+      let parsedBody
+      try {
+        parsedBody = JSON.parse(body)
+        if (!Object.keys(parsedBody).length) {
+          console.log('查無此書')
+          return
+        }
+      } catch (error) {
+      }
+      console.log('發生問題')
+      return
+    }
+    console.log('發生問題')
+  })
+}
+
+function createBook(name) {
+  request.post({
+    url: `${BASE_URL}/books`,
+    form: { name }
+  }, (error, response, body) => {
+    if (error) {
+      console.log(error)
+      return
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      let book
+      try {
+        book = JSON.parse(body)
+        console.log(`${book.id} ${book.name}`)
+        console.log('新增成功')
+        return
+      } catch (error) {
+        console.log(error)
+        return
+      }
+    }
+    console.log('發生問題')
+  })
 }
 
 function deleteBook(id) {
-  request(
-    `https://lidemy-book-store.herokuapp.com/books/${id}`,
-    (error, response, body) => {
-      if (error) {
+  request(`${BASE_URL}/books/${id}`, (error, response, body) => {
+    if (error) {
+      console.log(error)
+      return
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      let book
+      try {
+        book = JSON.parse(body)
+      } catch (error) {
         console.log(error)
-      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        let book
-        try {
-          book = JSON.parse(body)
-        } catch (err) {
-          console.log(err)
+        return
+      }
+      console.log(`${book.id} ${book.name}`)
+      console.log('刪除成功')
+      return
+    }
+    if (response.statusCode === 404) {
+      let parsedBody
+      try {
+        parsedBody = JSON.parse(body)
+        if (!Object.keys(parsedBody).length) {
+          console.log('查無此書')
           return
         }
-        if (book.name) {
-          console.log(`${book.name}`)
-          request.delete(
-            `https://lidemy-book-store.herokuapp.com/books/${id}`,
-            (error, response, body) => {
-              if (error) {
-                console.log(error)
-              } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-                console.log('delete this book successfully')
-              }
-            }
-          )
-        } else {
-          console.log('book does not exist')
-        }
+      } catch (error) {
       }
+      console.log('發生問題')
+      return
     }
-  )
-}
-
-function addBook(name) {
-  request.post(
-    {
-      url: 'https://lidemy-book-store.herokuapp.com/books',
-      form: {
-        name
-      }
-    },
-    (error, response, body) => {
-      if (error) {
-        console.log(error)
-      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        console.log('add successfully')
-      }
-    }
-  )
+    console.log('發生問題')
+  })
 }
 
 function updateBook(id, name) {
-  request(
-    `https://lidemy-book-store.herokuapp.com/books/${id}`,
-    (error, response, body) => {
-      if (error) {
+  request.patch({
+    url: `${BASE_URL}/books/${id}`,
+    form: { name }
+  }, (error, response, body) => {
+    if (error) {
+      console.log(error)
+      return
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      let book
+      try {
+        book = JSON.parse(body)
+      } catch (error) {
         console.log(error)
-      } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-        let book
-        try {
-          book = JSON.parse(body)
-        } catch (err) {
-          console.log(err)
+        return
+      }
+      console.log(`${book.id} ${name}`)
+      return
+    }
+    if (response.statusCode === 404) {
+      let parsedBody
+      try {
+        parsedBody = JSON.parse(body)
+        if (!Object.keys(parsedBody).length) {
+          console.log('查無此書')
           return
         }
-        if (book.name) {
-          request.patch(
-            {
-              url: `https://lidemy-book-store.herokuapp.com/books/${id}`,
-              form: {
-                name
-              }
-            },
-            (error, response, body) => {
-              if (error) {
-                console.log(error)
-              } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-                console.log('update successfully')
-              }
-            }
-          )
-        } else {
-          console.log('book does not exist')
-        }
+      } catch (error) {
       }
+      console.log('發生問題')
+      return
     }
-  )
+    console.log('發生問題')
+  })
 }
 
 function main() {
-  if (process.argv[2] === 'list') {
-    list()
-  } else if (process.argv[2] === 'read') {
-    getBook(process.argv[3])
-  } else if (process.argv[2] === 'delete') {
-    deleteBook(process.argv[3])
-  } else if (process.argv[2] === 'create') {
-    addBook(process.argv[3])
-  } else if (process.argv[2] === 'update') {
-    updateBook(process.argv[3], process.argv[4])
+  switch (process.argv[2]) {
+    case 'list':
+      getBooks(20)
+      break
+    case 'read':
+      getBook(process.argv[3])
+      break
+    case 'delete':
+      deleteBook(process.argv[3])
+      break
+    case 'create':
+      createBook(process.argv[3])
+      break
+    case 'update':
+      updateBook(process.argv[3], process.argv[4])
+      break
+    default:
+      console.log(
+`
+command not found!
+node hw2.js list: 印出前二十本書的 id 與書名
+node hw2.js read 1: 輸出 id 為 1 的書籍
+node hw2.js delete 1: 刪除 id 為 1 的書籍
+node hw2.js create 'I love coding': 新增一本名為 I love coding 的書
+node hw2.js update 1 'new name': 更新 id 為 1 的書名為 new name
+`)
   }
 }
 

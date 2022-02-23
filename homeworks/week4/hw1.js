@@ -5,7 +5,9 @@ request(
   (error, response, body) => {
     if (error) {
       console.log(error)
-    } else if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+      return
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       let books
       try {
         books = JSON.parse(body)
@@ -13,12 +15,14 @@ request(
         console.log(err)
         return
       }
-      getbooks(books)
+      showbooks(books)
+      return
     }
+    console.log('something went wrong')
   }
 )
 
-function getbooks(books) {
+function showbooks(books) {
   for (let i = 0; i < books.length; i++) {
     console.log(`${books[i].id} ${books[i].name}`)
   }
