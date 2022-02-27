@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -7,7 +8,6 @@ const multer = require('multer')
 const adminController = require('./controllers/admin')
 const userController = require('./controllers/user')
 const restaurantController = require('./controllers/restaurant')
-/* eslint-disable */
 const db = require('./models')
 /* eslint-enable */
 
@@ -110,7 +110,7 @@ app.get('/order-edit', userController.isAdmin, adminController.checkQuerySerial,
 app.post('/order-edit', userController.isAdmin, adminController.checkEditOrderInput, adminController.updateOrderInformation)
 
 // handle restaurant
-app.get('/index', adminController.getExpensiveDishes, restaurantController.renderIndex)
+app.get('/', adminController.getExpensiveDishes, restaurantController.renderIndex)
 app.get('/prize', restaurantController.renderPrize)
 app.get('/FAQ', adminController.getAllFAQs, restaurantController.renderFAQ)
 app.get('/menu', adminController.getBestsellings, adminController.getAllDishes, adminController.countCartDetails, restaurantController.renderMenu)
