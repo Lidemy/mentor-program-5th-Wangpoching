@@ -106,14 +106,21 @@ footer {
 	padding: 20px;
 }
 
-[class*="alert"] {
+.type {
+	color:  black;
+}
+
+.alert {
+	font-size: 12px;
+	color:  red;
+	position: absolute;	
+}
+
+.alert.hide {
 	font-size: 12px;
 	color:  red;
 	position: absolute;
-}
-
-.type {
-	color:  black;
+	visibility: hidden;
 }
 
 @media(max-width: 768px) {

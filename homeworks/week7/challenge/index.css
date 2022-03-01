@@ -12,6 +12,7 @@
   left:  0;
   height:  100%;
   width: 300%;
+  transition: left 0.5s linear;
 }
 
 .slide {
