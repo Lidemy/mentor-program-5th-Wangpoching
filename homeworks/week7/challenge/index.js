@@ -72,10 +72,12 @@ function switchSlide(nIndex) {
   // 修改容器位置，拿來切換圖片
   document.querySelector('.sildes-box').style.left = `${-nIndex * document.querySelector('.slide').offsetWidth}px`;
   // 洗掉所有分頁按鈕上的'cur'
-  [...document.querySelectorAll('li')].forEach((ele) => {
+  [...document.querySelectorAll('li')].some((ele) => {
     if (ele.classList.contains('cur')) {
       ele.classList.remove('cur')
+      return true
     }
+    return false
   })
   // 當前分頁按鈕加上'cur'
   document.querySelectorAll('li')[nIndex].classList.add('cur')
