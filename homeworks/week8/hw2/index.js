@@ -5,9 +5,9 @@ window.addEventListener('load', () => {
     // 並將 navbar 更新成熱門的遊戲
     reNewNav(data)
     // 並更改標題遊戲名稱為最熱門的遊戲名稱
-    changeGameName(data.top[0].game.name)
+    changeGameName(document.querySelectorAll('a')[0])
     // 最後才抓最熱門遊戲的實況並放上網頁
-    getHotStreams(0, data.top[0].game.name, reFillStreams)
+    getHotStreams(data.data[0].id, reFillStreams)
   })
   // 顯示 navbar 上第一個按鈕被選中
   document.querySelector('a').parentNode.classList.add('active')
@@ -16,33 +16,39 @@ window.addEventListener('load', () => {
     (event) => {
       if (event.target.tagName === 'A') {
         counter = 0
+        paginator = ''
         // 取得被點擊的遊戲的熱門實況並更新到網頁
-        getHotStreams(0, event.target.innerText, reFillStreams)
+        getHotStreams(event.target.dataset.id, reFillStreams)
         // 更新 navbar 上最新被選中的按鈕
         document.querySelector('.active').classList.remove('active')
         event.target.parentNode.classList.add('active')
         // 更新目前選擇的遊戲名稱
-        changeGameName(event.target.innerText)
+        changeGameName(event.target)
       }
     }
   )
-  window.addEventListener('scroll', addOnceScrollListener)
+  window.addEventListener('scroll', debunce(addMoreStreams))
 })
 
 // 設定文件
 let counter = 0 // 紀錄總共送了幾個 request
-const baseUrl = 'https://api.twitch.tv/kraken'
+let paginator = ''
+let allowNextRequest = true
+const baseUrl = 'https://api.twitch.tv/helix'
 const errorMsg = '系統不穩定，請再試一次'
+const TOKEN = '7k2dokrshhz5b2ic18xddvy8g84an2'
 const CLIEND_ID = 'xkypa7ouwlhjupibscd4mk8lhwgtgk'
-const ACCEPT = 'application/vnd.twitchtv.v5+json'
+const IMAGE_WIDTH = 300
+const IMAGE_HEIGHT = 200
+const GAME_LIMIT = 5
+const STREAM_LIMIT = 20
 const TEMPLATE_HTML = `
-      <div class='stream $nthRequest' >
+      <div class='stream' >
         <img class='cover' src='$large'></img>
         <div class='stream-extra'>
-          <img class='stream-avatar' src='$logo'></img>
           <div class=stream-details>
-            <span class='stream-info'>$status</span>
-            <div class='stream-title'>$name</div>
+            <div class='stream-title'>$title</div>
+            <span class='stream-name'>$name</span>
           </div>
         </div>
       </div>
@@ -70,14 +76,28 @@ function draw(url, cb) {
   }
   request.open('GET', url, true)
   request.setRequestHeader('Client-ID', CLIEND_ID)
-  request.setRequestHeader('Accept', ACCEPT)
+  request.setRequestHeader('Authorization', `Bearer ${TOKEN}`)
   request.send()
 }
 
 // 取得最熱門的遊戲
 function getTopGames(callback) {
-  const topGamesUrl = `${baseUrl}/games/top?limit=${5}`
-  draw(topGamesUrl, (err, data) => {
+  const topGamesUrl = `${baseUrl}/games/top?first=${GAME_LIMIT}`
+  draw(topGamesUrl, (err, topGames) => {
+    if (err) {
+      alert(err)
+      return
+    }
+    callback(topGames)
+  })
+}
+
+// 取得熱門實況
+function getHotStreams(id, callback) {
+  allowNextRequest = false
+  const topStreamsUrl = `${baseUrl}/streams/?game_id=${id}&first=${STREAM_LIMIT}&after=${paginator}`
+  document.querySelector('.desc').innerText = `Top ${20 * (counter + 1)} popular live streams sorted by current viewers`
+  draw(topStreamsUrl, (err, data) => {
     if (err) {
       alert(err)
       return
@@ -86,96 +106,65 @@ function getTopGames(callback) {
   })
 }
 
-// 取得熱門實況
-function getHotStreams(offset, name, callback) {
-  const topStreamsUrl = `${baseUrl}/streams/?game=${encodeURIComponent(name)}&limit=${20}&offset=${offset}`
-  const nthRequest = offset / 20
-  document.querySelector('.desc').innerText = `Top ${20 * (counter + 1)} popular live streams sorted by current viewers`
-  draw(topStreamsUrl, (err, data) => {
-    if (err) {
-      alert(err)
-      return
-    }
-    callback(data, nthRequest)
-  })
-}
-
 // 將熱門實況更新到 UI 上
-function reFillStreams(data, nthRequest) {
+function reFillStreams(data) {
   const streamsContainer = document.querySelector('.streams-container')
-  if (nthRequest === 0) {
+  if (counter === 0) {
     streamsContainer.innerHTML = ''
   }
-  // 實況照熱門順序排列（防止 response 回來的時間不同
-
-  // 如果是第一次塞在最後面
-  if (nthRequest === 0) {
-    for (let i = 0; i < data.streams.length; i++) {
-      const div = document.createElement('div')
-      streamsContainer.appendChild(div)
-      div.outerHTML = TEMPLATE_HTML
-        .replace('$large', data.streams[i].preview.large)
-        .replace('$logo', data.streams[i].channel.logo)
-        .replace('$status', data.streams[i].channel.status)
-        .replace('$name', data.streams[i].channel.name)
-        .replace('$nthRequest', `N${nthRequest * 20 + i}`)
-    }
-  } else {
-    // 如果找的到之前的屁股就塞在他後面
-    let refPosition = nthRequest * 20 - 1
-    while (refPosition >= 19) {
-      if (document.querySelector(`.N${refPosition}`)) {
-        for (let i = 0; i < data.streams.length; i++) {
-          const div = document.createElement('div')
-          const neighbor = document.querySelector(`.N${refPosition + i}`)
-          neighbor.parentNode.insertBefore(div, neighbor.nextSibling)
-          div.outerHTML = TEMPLATE_HTML
-            .replace('$large', data.streams[i].preview.large)
-            .replace('$logo', data.streams[i].channel.logo)
-            .replace('$status', data.streams[i].channel.status)
-            .replace('$name', data.streams[i].channel.name)
-            .replace('$nthRequest', `N${nthRequest * 20 + i}`)
-        }
-        break
-      }
-      refPosition -= 20
-    }
+  // 實況照熱門順序排列
+  for (const stream of data.data) {
+    const div = document.createElement('div')
+    streamsContainer.appendChild(div)
+    div.outerHTML = TEMPLATE_HTML
+      .replace(
+        '$large',
+        stream.thumbnail_url
+          .replace('{width}', IMAGE_WIDTH)
+          .replace('{height}', IMAGE_HEIGHT)
+      )
+      .replace('$name', stream.user_name)
+      .replace('$title', stream.title)
   }
+  paginator = data.pagination.cursor
+  allowNextRequest = true
 }
 
 // 更改標題遊戲名稱
-function changeGameName(gamename) {
-  document.querySelector('.game-name').innerText = gamename
+function changeGameName(game) {
+  const currentGame = document.querySelector('.game-name')
+  currentGame.innerText = game.innerText
+  currentGame.dataset.id = game.dataset.id
 }
 
 // 將 navbar 更新成熱門的遊戲
 function reNewNav(data) {
   const hyperLinks = document.querySelectorAll('a')
-  const topGames = []
-  for (let i = 0; i < data.top.length; i++) {
-    topGames.push(data.top[i].game.name)
-  }
-  for (let i = 0; i < hyperLinks.length; i++) {
-    hyperLinks[i].innerText = topGames[i]
+  let i = 0
+  for (const game of data.data) {
+    hyperLinks[i].innerText = game.name
+    hyperLinks[i].dataset.id = game.id
+    i++
   }
 }
 
 // 載入更多熱門實況
 function addMoreStreams() {
   counter++
-  const name = document.querySelector('.game-name').innerText
-  getHotStreams(20 * counter, name, reFillStreams)
+  const { id } = document.querySelector('.game-name').dataset
+  getHotStreams(id, reFillStreams)
 }
 
-// 添加一次性滾動監聽器
-function addOnceScrollListener() {
-  const page = document.documentElement
-
-  // 預先載入
-  if (page.scrollHeight - window.innerHeight * 0.05 <= page.scrollTop + window.innerHeight) {
-    window.addEventListener('scroll', addMoreStreams, {
-      // This will invoke the event once and de-register it afterward
-      once: true
-    })
+// debounce
+function debunce(func, delay = 1000) {
+  let timer = null
+  return () => {
+    const page = document.documentElement
+    // 預先載入
+    if (page.scrollHeight - window.innerHeight * 0.05 <= page.scrollTop + window.innerHeight && allowNextRequest) {
+      console.log('trigger')
+      clearTimeout(timer)
+      timer = setTimeout(func, delay)
+    }
   }
 }

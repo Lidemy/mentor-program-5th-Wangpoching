@@ -9,7 +9,7 @@ window.addEventListener('load', () => {
     show()
     // 檢查數字範圍是否合法
     const input = Number(document.querySelector('.input').value)
-    if (!isNumber(input)) {
+    if (!isValidNumber(input)) {
       document.querySelector('.warning').classList.add('show')
     } else {
       // 跑迴圈
@@ -23,7 +23,7 @@ window.addEventListener('load', () => {
 })
 
 // 檢查是不是數字
-function isNumber(text) {
+function isValidNumber(text) {
   if (typeof text === 'number' && !isNaN(text)) {
     if (text >= 10 && text <= 1000) {
       return true
@@ -84,9 +84,10 @@ function repeat(max) {
       problem.dataset.times = Number(problem.dataset.times) + 1
     } else {
       data = data.prize.toLowerCase()
-      for (const i in prizes) {
-        if (data === prizes[i]) {
-          document.querySelectorAll('span')[Number(i) + 1].dataset.times = Number(document.querySelectorAll('span')[Number(i) + 1].dataset.times) + 1
+      for (const prize of prizes) {
+        if (data === prize) {
+          const targetPrize = document.querySelector(`.${data}`)
+          targetPrize.dataset.times = Number(targetPrize.dataset.times) + 1
           break
         }
       }
@@ -95,7 +96,7 @@ function repeat(max) {
     const beforeCor = []
     for (const target of document.querySelectorAll('span+div')) {
       target.dataset.rate = round(Number(target.previousElementSibling.dataset.times) / Number(total.dataset.times) * 100, 2)
-      beforeCor.push(Number(target.dataset.rate))
+      beforeCor.push(target.dataset.rate)
     }
 
     // 修正機率百分比到總和一百
@@ -103,7 +104,6 @@ function repeat(max) {
     const afterCor = correction(beforeCor, 100)
     for (const target of document.querySelectorAll('span+div')) {
       target.dataset.rate = round(afterCor[index], 2)
-      console.log(round(afterCor[index], 2))
       index++
     }
     show()

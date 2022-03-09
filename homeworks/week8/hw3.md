@@ -146,7 +146,7 @@ x-timer: S1622879396.289021,VS0,VS0,VE0
 
 ## JSONP 是什麼？
 
-其實還有其他在瀏覽器上發送 request 的方法，不僅**不會跳轉畫面**，也**不用遵守同源限制**，其實在寫 HTML 的時候，我們常用的 script 或是 img 等等標籤都常常透過 src 屬性用 get 的方式跨網域拿到資料。這個方式就叫做 JSONP（JSON with Padding）。
+其實還有其他在瀏覽器上發送 request 的方法，不僅**不會跳轉畫面**，也**不用遵守同源限制**，其實在寫 HTML 的時候，我們常用的 script 標籤常常透過 src 屬性用 get 的方式跨網域拿到資料。這個方式就叫做 JSONP（JSON with Padding）。
 
 server 端可以透過這個方法來傳資料，只要把內容包在一個函式裡面，而 client 端則定義函式的動作即可，像是 twitch 就有提供這樣的方式，使用者要再額外提供函式的名稱來讓 twitch server 把資料放在函式的參數裡。
 
