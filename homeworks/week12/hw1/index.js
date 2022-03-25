@@ -20,7 +20,7 @@ function addComment2DOM(container, comment, id, isAppend = true, apper = true) {
       <div class="toast" data-id = "${id}" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
           <strong class="me-auto">${escape(comment.nickname)}</strong>
-          <small>${escape(comment.created_at)}</small>
+          <small>${escape(comment.createdAt)}</small>
           <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">

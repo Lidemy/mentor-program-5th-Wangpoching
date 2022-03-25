@@ -47,7 +47,7 @@
     array_push($discussions, array(
       'nickname' => $row['nickname'],
       'content' => $row['content'],
-      'created_at' => $row['created_at'],
+      'createdAt' => $row['created_at'],
     ));
   }
   $json = array(
