@@ -63,7 +63,7 @@ function ajax(url, method, data, cb) {
 // 起始參數
 const ERROR = 'Connection Error'
 const LIMIT = 5
-const BASEURL = 'http://mentor-program.co/mtr04group3/Wangpoching/api_based_board/'
+const BASEURL = 'http://13.59.36.215/commentArea-plugin/'
 let count = 0
 let hasComment = true
 
