@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import { getLoadMore } from './templates.js'
 
 // 逃脫字元
 export function escape(string) {
@@ -25,13 +26,11 @@ export function date() {
 
 // XHR
 export function ajax(url, method, data, cb) {
-  const input = {}
-  input.type = method
-  input.url = url
-  if (data) {
-    input.data = data
-  }
-  $.ajax(input).done((res) => {
+  $.ajax({
+    type: method,
+    url,
+    ...(data && { data })
+  }).done((res) => {
     cb(res, null)
   }).fail((error) => {
     cb(null, error)
@@ -39,24 +38,25 @@ export function ajax(url, method, data, cb) {
 }
 
 // 添加留言到 DOM
-export function addComment2DOM(container, comment, id, isAppend = true, apper = true) {
+export function addComment2DOM(container, { nickname, createdAt, content }, id, isAppend = true, apper = true) {
   const html = `
     <div class="col-8 comment mb-3 ${apper ? '' : 'hide'}">
       <div class="toast" data-id = "${id}" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-          <strong class="me-auto">${escape(comment.nickname)}</strong>
-          <small>${escape(comment.created_at)}</small>
+          <strong class="me-auto">${escape(nickname)}</strong>
+          <small>${escape(createdAt)}</small>
           <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">
-          ${escape(comment.content)}
+          ${escape(content)}
         </div>
       </div>
     </div>
   `
-  if (isAppend) {
-    container.append(html)
-  } else {
-    container.prepend(html)
-  }
+  isAppend ? container.append(html) : container.prepend(html)
+}
+
+// 增加按鈕
+export function bindAddMore2Dom(container, className) {
+  container.append(getLoadMore(className))
 }

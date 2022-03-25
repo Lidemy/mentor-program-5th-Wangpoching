@@ -17,7 +17,7 @@ export function getAddCommentForm(className, commentsClassName, wrapperClassName
             <textarea name="content" class="form-control" id="content-textarea" rows="5"></textarea>
           </div>
           <button type="submit" class="btn btn-primary mt-3 btn-submit">提交</button>
-          <a type="submit" class="btn btn-primary mt-3 btn-refresh" href="http://mentor-program.co/mtr04group3/Wangpoching/index.html">刷新頁面</a>
+          <a type="submit" class="btn btn-primary mt-3 btn-refresh" href="#">刷新頁面</a>
         </form>
         <div class="${commentsClassName} row justify-content-center mt-5">
         </div>
@@ -31,6 +31,6 @@ export function getAddCommentForm(className, commentsClassName, wrapperClassName
           </ul>
         </div>
       </div>
-    </div>  
+    </div>
   `
 }

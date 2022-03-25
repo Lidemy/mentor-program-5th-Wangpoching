@@ -1,23 +1,26 @@
-.toast { 
-  width: 100%; 
-} 
-.hide { 
+.toast {
+  width: 100%;
+}
+
+body {
+  background:  grey;
+}
+
+.header {
+  height: 10px;
+  margin-top: 10vh;
+}
+
+.hide {
   display: none;
-} 
-.main { 
-  padding-bottom: 0!important; 
 }
 
-.btn-close {
-  position: relative;
+.main {
+  padding-bottom: 0!important;
 }
 
-.btn-close::before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  content: 'x'; 
-  color: #5B5B5B;
-  font-weight: 500;
+.footer {
+	margin-bottom: 10vh;
 }
+
+

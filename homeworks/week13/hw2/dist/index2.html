@@ -4,26 +4,32 @@
     <meta charset="utf-8">
     <title>Webpack App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script defer src="main.min.js"></script>
+  <style>
+    .upper {
+      height: 500px;
+      width: 100%;
+      background-color: #fa0;
+    }
+    .comment-area {
+      height: 500px;
+      overflow: auto;
+    }
+  </style>
+  <script defer src="main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded',() => {
       commentPlugin.init({
-        siteKey: 'huli',
-        apiUrl: 'http://mentor-program.co/mtr04group3/Wangpoching/api_based_board/',
-        containerClassName:'comment-area2'
-      })   
-      commentPlugin.init({
         siteKey: 'boching',
-        apiUrl: 'http://mentor-program.co/mtr04group3/Wangpoching/api_based_board/',
+        apiUrl: 'http://13.59.36.215/api_based_board/',
         containerClassName:'comment-area'
       })
-    }) 
+    })
   </script>
 </head>
   <body>
-    <div class="comment-area">
+    <div>
+      <div class="upper"></div>
+      <div class="comment-area"></div>      
     </div>
-    <div class="comment-area2">
-    </div>    
   </body>
 </html>
