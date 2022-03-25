@@ -5,7 +5,7 @@ export function getLoadMore(className) {
 export function getAddCommentForm(className, commentsClassName, wrapperClassName) {
   return `
     <div class="${wrapperClassName} d-flex flex-column">
-      <div class="container bg-light py-5 main">
+      <div class="container-fluid bg-light py-5 main">
         <h2>討論區</h2>
         <form class="${className}">
           <div class="form-group">
@@ -22,7 +22,7 @@ export function getAddCommentForm(className, commentsClassName, wrapperClassName
         <div class="${commentsClassName} row justify-content-center mt-5">
         </div>
       </div>
-      <div class="container mt-auto d-flex flex-row-reverse bg-dark footer">
+      <div class="container-fluid mt-auto d-flex flex-row-reverse bg-dark footer">
         <div class="dropup">
           <a class="btn btn-dark dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
