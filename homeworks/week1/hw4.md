@@ -148,7 +148,7 @@ git branch teacher
 ```
 
 ```cmd
-git merge teacher
+git checkout teacher
 ```
 
 或者直接輸入：
