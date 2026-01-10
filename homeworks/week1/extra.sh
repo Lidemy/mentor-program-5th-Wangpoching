@@ -30,6 +30,28 @@ echo $data | grep -o '"location": ".*", "email' | sed 's/"location": "//g' | sed
 echo $data | grep -o '"blog": ".*", "location' | sed 's/"blog": "//g' | sed 's/", "location//g';
 ```
 
+```
+#!/bin/bash
 
+i=$1
+url="https://api.github.com/users/${i}"
+
+# -s 可以避免進度條
+response=$(curl -s "$url")
+
+profile=$(echo "$response" | grep -oE '"[^"]+": "[^"]+"')
+
+name=$(echo "$profile" | grep "name" | awk -F ': ' '{print $2}')
+bio=$(echo "$profile" | grep "bio" | awk -F ': ' '{print $2}')
+location=$(echo "$profile" | grep "location" | awk -F ': ' '{print $2}')
+blog=$(echo "$profile" | grep "blog" | awk -F ': ' '{print $2}')
+
+echo "name: $name"
+echo "bio: $bio"
+echo "location: $location"
+echo "blog: $blog"
+
+exit 0
+```
 
 
