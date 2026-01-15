@@ -61,3 +61,80 @@ console.log(answer)
 43845728335428665892452211230138950874256724845100897209088600677816836907
 8193075209592426056314957124024831139178307483030144703850736257969*/
 
+/*
+function numberToArr(n) {
+	var remainder = []
+	var quotient = n
+	while (quotient > 0) {
+		quotient = Math.floor(n / 10)
+		remainder.push(n % 10)
+		n = quotient
+	}
+	return remainder
+}
+
+function allMultiplyOne(a, b) {
+	var carry = 0
+	var ans = []
+	for (var i = 0; i < a.length; i++) {
+		var value = b * a[i] + carry
+		ans.push(value % 10)
+		carry = Math.floor(value / 10)
+	}
+	if (carry) {
+		ans.push(...numberToArr(carry))
+	}
+	return ans
+}
+
+function sum(arr) {
+	var ans = []
+	var carry = 0
+	while (arr[arr.length - 1].length) {
+		var value = 0
+		for (var i = 0; i < arr.length; i++) {
+			var newValue = arr[i].shift()
+			if (!isNaN(newValue)) {
+				value += newValue
+			}
+		}
+		value += carry
+		//console.log(`value: ${value}`)
+		ans.push(value % 10)
+		carry = Math.floor(value / 10)
+		//console.log(`carry: ${carry}`)		
+	}
+	if (carry) {
+		ans.push(...numberToArr(carry))
+	}
+	return ans.reverse().join('')
+}
+
+function multiply(a, b) {
+	var aArray = a.split('').reverse().map(ele => Number(ele))
+	var bArray = b.split('').reverse().map(ele => Number(ele))
+	var sumation = []
+	for (var i = 0; i < bArray.length; i++) {
+		var j = i
+		var value = allMultiplyOne(aArray, bArray[i])
+		while (j > 0) {
+			value.splice(0, 0, 0)
+			j--
+		}
+		sumation.push(value)
+	}
+	return sum(sumation)
+}
+
+console.log(numberToArr(123))
+console.log(numberToArr(5))
+console.log(allMultiplyOne(['4', '2', '3'], 6))
+console.log(allMultiplyOne(['9', '6', '6'], 8))
+console.log(multiply('12345', '456878') == (12345 * 456878))
+console.log(multiply('84035', '456878849') == (84035 * 456878849))
+console.log(multiply('12345937', '456878') == (12345937 * 456878))
+console.log(multiply(
+  '12345678901234567890123456789012345678901234567890',
+  '98765432109876543210987654321098765432109876543210'
+) == '1219326311370217952261850327338667885945115073915611949397448712086533622923332237463801111263526900')
+*/

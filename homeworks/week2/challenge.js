@@ -49,3 +49,32 @@ function sort(arr) {
 console.log(search([1, 3, 10, 14, 39], 14)) //3
 console.log(search([1, 3, 10, 14, 39], 299)) //-1
 
+/*
+function resetSearchIndex(start, end) {
+	return Math.ceil((end - start)/2) + start
+}
+
+function search(arr, target) {
+	var startIndex = 0
+	var endIndex = arr.length - 1
+	var index = resetSearchIndex(startIndex, endIndex)
+	while(startIndex <= endIndex) {
+		// Jackpot!!!!!!
+		if (arr[index] === target) {
+			return index
+		} else {
+			// 找不到, 要重新切
+			if (arr[index] > target) {
+				// target 比 index 小: 取前半部, 重新設定 end index
+				endIndex = index - 1
+				index = resetSearchIndex(startIndex, endIndex)
+			} else {
+				// target 比 index 大: 取後半部, 重新設定 startIndex
+				startIndex = index + 1
+				index = resetSearchIndex(startIndex, endIndex)
+			}
+		}
+	}
+	return -1
+}
+ */
