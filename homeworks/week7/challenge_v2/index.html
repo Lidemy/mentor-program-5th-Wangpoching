@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Slide</title>
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="bd-example">
+      <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="3"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="4"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="5"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/10/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>First slide label</h5>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/20/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Third slide label</h5>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/30/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/40/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/50/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://picsum.photos/id/60/1800/1200" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+  </body>
+  <script>
+    const carouselInnerEle = document.querySelector('.carousel-inner')
+    const indicatorsEle = document.querySelector('.carousel-indicators')
+    let currentSlide = 0
+    let isAnimating = false
+    let timer
+
+    function changeActive(targetSlide) {
+      indicatorsEle.querySelector('.active')?.classList.remove('active')
+      indicatorsEle.querySelector(`[data-slide-to="${targetSlide}"]`)?.classList.add('active')
+      currentSlide = targetSlide
+    }
+
+    function slideTo(moveTo) {
+        carouselInnerEle.style.left = `${-1 * (moveTo + 1) * 100}%`
+    }
+
+    function goToSlide(moveTo) {
+      if (isAnimating) return
+      isAnimating = true
+      slideTo(moveTo)
+      changeActive(moveTo)
+    }
+    
+    const realTotalSlides = document.querySelectorAll('.carousel-item').length
+    const firstSlide = document.querySelector('.carousel-item')
+    const lastSlide = carouselInnerEle.lastElementChild
+
+    const firstCloned = firstSlide.cloneNode(true)
+    firstCloned.classList.remove('active')
+    carouselInnerEle.appendChild(firstCloned)
+
+    const lastCloned = lastSlide.cloneNode(true)
+    lastCloned.classList.remove('active')
+    carouselInnerEle.prepend(lastCloned)
+
+    // Indicator 動畫
+    indicatorsEle.addEventListener('click', (e) => {
+      if (e.target.tagName === 'LI' && !e.target.classList.contains('active')) {
+        clearInterval(timer)
+        goToSlide(Number(e.target.dataset.slideTo))
+      }
+    })
+
+    carouselInnerEle.addEventListener('transitionend', () => {
+      if (currentSlide === realTotalSlides) {
+        carouselInnerEle.style.transition = 'none'
+        slideTo(0)
+        changeActive(0)
+        setTimeout(() => carouselInnerEle.style.transition = 'left 0.5s ease', 50)
+      } else if (currentSlide === -1) {
+        carouselInnerEle.style.transition = 'none'
+        slideTo(realTotalSlides - 1)
+        changeActive(realTotalSlides - 1)
+        setTimeout(() => carouselInnerEle.style.transition = 'left 0.5s ease', 50)
+      }
+      isAnimating = false
+    })
+
+    // 往前切換投影片
+    document.querySelector('.carousel-control-next').addEventListener('click', () => {
+      clearInterval(timer)
+      goToSlide(currentSlide + 1)
+    })
+
+    // 往後切換投影片
+    document.querySelector('.carousel-control-prev').addEventListener('click', () => {
+      clearInterval(timer)
+      goToSlide(currentSlide - 1)
+    })
+
+    // 滑鼠進入則自動輪播圖片
+    carouselInnerEle.addEventListener('mouseleave',
+      () => {
+        // 輪播圖自動切換
+        timer = setInterval(
+          () => {          
+            // 向右切換圖片
+            goToSlide(currentSlide + 1)
+          }, 4000)
+      }
+    )
+
+    carouselInnerEle.addEventListener('mouseenter',
+      () => {
+        clearInterval(timer)
+      }
+    )
+  </script>
+</html>

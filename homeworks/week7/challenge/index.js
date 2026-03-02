@@ -39,7 +39,7 @@ window.addEventListener('load',
     // 自動切換功能
 
     // 滑鼠移出投影片停止自動切換
-    document.querySelector('.container').addEventListener('mouseleave',
+    document.querySelector('.container').addEventListener('mouseenter',
       () => {
         clearInterval(timer)
       }
@@ -49,7 +49,7 @@ window.addEventListener('load',
     let timer
 
     // 滑鼠移進投影片開始自動切換
-    document.querySelector('.container').addEventListener('mouseenter',
+    document.querySelector('.container').addEventListener('mouseleave',
       () => {
         // 輪播圖自動切換
         timer = setInterval(
