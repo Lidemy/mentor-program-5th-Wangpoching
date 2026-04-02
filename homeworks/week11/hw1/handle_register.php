@@ -3,32 +3,43 @@
   require_once('conn.php');
   require_once('utils.php');
 
-  // 沒輸入帳密或暱稱（type 1 error）
-  if (!is_set($_POST['nickname']) || !is_set($_POST['username']) || !is_set($_POST['password'])) {
-    header('Location:register.php?errCode=1');
-    die('資料不齊全');
+  $userName = trim($_POST['username'] ?? '');
+  if ($userName === '') {
+      $_SESSION['flash'] = '帳號不可為空';
+      header('Location: register.php');
+      exit();
   }
-  
-  // 在 user 資料庫新增帳密資訊
-  $nickname = $_POST['nickname'];
-  $username = $_POST['username'];
-  $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
-  $sql = 'INSERT INTO boching_board_comment_users (nickname, username,password) VALUES (?, ?, ?)';
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param('sss',$nickname, $username,$password);
-  $result = $stmt->execute();
-  
-  // 帳號重複（type 2 error）
-  if ($result) {
-    // 協助登入
-    // 給一組新的通行證並存入 username 變數
-    session_regenerate_id();
-    $_SESSION['username'] = $username;
-    header("Location:index.php"); 
-  } else if ($conn->errno === 1062) {
-    header('Location:register.php?errCode=2');
-    die('帳號重複');
-  } else {
-    die('Error. '. $conn->error);
+
+  $nickName = trim($_POST['nickname'] ?? '');
+  if ($nickName === '') {
+      $_SESSION['flash'] = '暱稱不可為空';
+      header('Location: register.php');
+      exit();
   }
+
+  $password = trim($_POST['password'] ?? '');
+  if ($pasword === '') {
+      $_SESSION['flash'] = '密碼不可為空';
+      header('Location: register.php');
+      exit();
+  }
+
+  $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+  $sql = "INSERT INTO `users` (`username`, `nickname`, `password_hash`, `roleId`) VALUES (?, ?, ?, ?)";
+  $result = executeUpdate($conn, $sql, 'sssi', $userName, $nickName, $passwordHash, NORMAL_ROLE_ID);
+  if (!$result['success'] || $result['affected_rows'] === 0) {
+    if ($result['errno'] === 1062) {
+        $_SESSION['flash'] = '帳號已存在';
+    } else {
+        $_SESSION['flash'] = '系統錯誤';
+    }
+    header('Location: register.php');
+    exit();
+  }
+
+  // 發放 Cookie
+  $_SESSION['username'] = $userName;
+  header('Location: index.php');
+  exit();
 ?>

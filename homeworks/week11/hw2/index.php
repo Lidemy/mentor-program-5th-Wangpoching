@@ -1,99 +1,128 @@
 <?php
-  session_start();
-  require_once('conn.php');
-  require_once('utils.php');
+	require_once('conn.php');
+	require_once('utils.php');
 
-  $username = NULL;
-  if (is_set($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-    $stmt = $conn->prepare(
-      'SELECT * FROM boching_blog_posts WHERE is_deleted IS NULL AND username=? ORDER BY id DESC'
-    );
-    $stmt->bind_param('s', $username);
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Error:' . $conn->error);
+  // Hint: Posts Count = 0 不顯示文章
+  // 選出精選文章
+  $sql = "SELECT Count(id) as postsCount FROM `posts` WHERE selected = 1";
+  $result = $conn->query($sql);
+  if (!$result) {
+    $postsCount = 0;
+  } else {
+    $postsCount = $result->fetch_assoc()['postsCount'];
+  }
+  if ($postsCount != 0) {
+    // 分頁邏輯
+    $page = getValue($_GET, 'page');
+    if ($page === '') {
+      $page = 1;
+    } else {
+      $page = (int)$page;
+      $page = max(1, $page);
     }
-    $result = $stmt->get_result();
+    $perPage = 5;
+    $totalPages = ceil($postsCount / $perPage);
+    $page = min($totalPages, $page);
+    $offset = ($page - 1) * $perPage;
+    // 選出精選文章
+    $sql = "SELECT id, title, subTitle, created_at FROM `posts` WHERE selected = 1 ORDER BY created_at ASC LIMIT ? OFFSET ?";
+    $result = executeQuery($conn, $sql, 'ii', $perPage, $offset);
+    if (!$result) {
+      $postsCount = 0;
+    }
+    $prevDisabled = $page == 1 ? 'disabled' : '';
+    $nextDisabled = $page == $totalPages ? 'disabled' : '';
   }
 ?>
 <!DOCTYPE html>
+<html lang="en">
+  <?php
+    $title = '首頁';
+    $localCSS = [
+      'css/base.css',
+      'css/components.css',
+      'css/style.css',
+    ];
+    $extraCSS = [
+    	'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap'
+    ];
+    require_once('template/head.php');
+  ?>
+  <body>
+    <div class="page-public-landing">
+      <div class="content-wrapper">
+        <?php
+          $active = 'Home';
+          require_once('template/nav.php');
+        ?>
+        <div class="intro">
+          <div class="intro__title">Pocyun Wang is an omnivore who codes</div>
+          <div class="intro__content">Welcome to my little corner of the internet. I'm a curious <span class="strong">omnivore</span> — math, history, design, sports, geography, science... I'll take a bite of anything. So <span class="strong">expect the unexpected</span> here.
 
-<html>
-<head>
-  <meta charset="utf-8">
-
-  <title>部落格</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="normalize.css" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <nav class="navbar">
-    <div class="wrapper navbar__wrapper">
-      <div class="navbar__site-name">
-        <a href='index.php'>Who's Blog</a>
-      </div>
-      <ul class="navbar__list">
-        <div>
-          <li><a href="#">文章列表</a></li>
-          <li><a href="#">分類專區</a></li>
-          <li><a href="#">關於我</a></li>
+I get bored easily and love exchanging ideas with people who spark new ones. If you're the kind of person who gets excited about everything, you'll fit right in — come back often. <a href="about.php">Read more »</a></div>
         </div>
-        <div>
-          <?php if (is_set($username)) { ?>
-            <li><a href="admin.php">管理後台</a></li>
-            <li><a href="logout.php">登出</a></li>
-          <?php } else { ?>
-            <li><a href="login.php">登入</a></li>
-            <li><a href="register.php">註冊</a></li>         
-          <?php } ?>
+        <div class="profiles">
+          <div class="profiles-wrapper">
+            <div class="profile">Travel around Europe & Africa (4.5 months)</div>
+            <div class="profile">Working Holiday in Ireland (8 months)</div>
+            <div class="profile">Motorcycle Travel Indochina Peninsula (1.5 month)</div>
+            <div class="profile">CacDi (Full-Stack Developer)</div>
+            <div class="profile">Academic Sinica (Biodiversity Research Center)</div>
+            <div class="profile last">National Taiwan University (Department of Geography)</div>
+          </div>
+          <button>KEEP GOING</button>
         </div>
-      </ul>
-    </div>
-  </nav>
-  <section class="banner">
-    <div class="banner__wrapper">
-      <h1>存放技術之地</h1>
-      <div>Welcome to my blog</div>
-    </div>
-  </section>
-  <div class="container-wrapper">
-    <div class="posts">
-      <?php if (!is_set($username) || $result->num_rows ===0) { ?>
-        <article class="post default-post">
-          <div class="post__header">
-            <div>建立值得被分享的部落格</div>
-          </div>
-          <div class="post__info">
-            <?php 
-              echo date("Y-m-d H:i:s",time()+8*60*60);
-            ?>
-          </div>
-          <div class="post__content">
-            在靈感閃現的那一刻，使用您的電腦或移動設備，隨時用文字紀錄您的想法和管理您的部落格。
-          </div>
-        </article>
-      <?php } else { ?>
-        <?php while ($row = $result->fetch_assoc()) { ?>    
-          <article class="post">
-            <div class="post__header">
-              <div><?php echo escape($row['title']); ?></div>
-              <div class="post__actions">
-                <a class="post__action" href="update_post.php?id=<?php echo escape($row['id']); ?>">編輯</a>
+        <div class="posts">
+          <?php if ($postsCount != 0): ?>
+            <div class="posts__overview">
+              <div class="posts__title">Selected Posts</div>
+              <div class="posts__count">
+                <?= min($offset + $perPage, $postsCount) ?> of <?= $postsCount ?> posts
+                <a class="btn btn-prev <?= $prevDisabled ?>" href="?page=<?= $page - 1 ?>">&#8249;</a>
+                <a class="btn btn-next <?= $nextDisabled ?>" href="?page=<?= $page + 1 ?>">&#8250;</a>
               </div>
             </div>
-            <div class="post__info">
-              <?php echo escape($row['created_at']); ?>
+            <div class="posts__container">
+              <?php while($row = $result->fetch_assoc()): ?>
+                <a class="post" href="post.php?id=<?= $row['id'] ?>">
+                  <div class="post__title">
+                    <?= escape($row['title']) ?>
+                    <div class="post__date"><?= date('F d, Y', strtotime(escape($row['created_at']))) ?></div>
+                  </div>
+                  <div class="post__subTitle"><?= escape($row['subTitle']) ?></div>
+                </a>
+              <?php endwhile; ?>
             </div>
-            <div class="post__content"><?php echo escape($row['content']); ?></div>
-            <a class="btn-read-more" href="post.php?id=<?php echo escape($row['id']); ?>">READ MORE</a>
-          </article>
-        <?php } ?>
-      <?php } ?>
+          <div class="posts__count">
+            <a class="btn btn-prev <?= $prevDisabled ?>" href="?page=<?= $page - 1 ?>">&#8249;</a>
+            <?= min($offset + $perPage, $postsCount) ?> of <?= $postsCount ?> posts
+            <a class="btn btn-next <?= $nextDisabled ?>" href="?page=<?= $page + 1 ?>">&#8250;</a>
+          </div>
+          <?php endif; ?>
+        </div>
+      </div>
+      <footer class="footer">Handcrafted by <span class="accent">Pocyun</span> for <span class="accent" id="years"></span> years · <div class="footer-right">
+          <a href="https://github.com/yourname" target="_blank">GitHub</a>
+          <a href="https://linkedin.com/in/yourname" target="_blank">LinkedIn</a>
+        </div>
+      </footer>
     </div>
-  </div>
-  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
-</body>
+  </body>
+  <script src="js/footer.js"></script>
+  <script>
+    const slider = document.querySelector('.profiles-wrapper')
+    const original = slider.innerHTML
+
+    document.querySelector('.profiles button').addEventListener('click', () => {
+      slider.scrollBy({ top: 30, behavior: 'smooth' })
+    })
+
+    slider.addEventListener('scrollend', () => {
+      const scrollGap = slider.scrollHeight - slider.clientHeight
+      // 滾到底，加一份
+      if (Math.abs(slider.scrollTop - scrollGap) < 5) {
+        slider.insertAdjacentHTML('beforeend', original)
+      }
+    })
+  </script>
 </html>

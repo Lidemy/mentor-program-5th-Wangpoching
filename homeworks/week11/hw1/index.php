@@ -2,183 +2,205 @@
   session_start();
   require_once('conn.php');
   require_once('utils.php');
-  
-  // 檢查是不是有登錄過了
-  $username = NULL;
-  if (is_set($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-    $nickname = getdata_from_username($username)['nickname'];
-    $identity = getdata_from_username($username)['identity'];
+
+  // Get Announcements
+  $announceText = getAnnouncements($conn);
+
+  // 計算分頁
+  $currentPage = (int)($_GET['page'] ?? 1);
+  $currentPage = max(1, $currentPage); // 先夾住 >= 1，等算完 totalPages 再夾上限
+  $perPage = 5;
+  $sql = "SELECT count(id) as count FROM `comments` WHERE 1";
+  $countResult = $conn->query($sql);
+  if (!$countResult) {
+    die('Error' . $conn->error);
+  }
+  $row = $countResult->fetch_assoc();
+  $total = $row['count'];
+  if ($total !== 0) {
+    $totalPages = ceil($total / $perPage);
+    $currentPage = min($currentPage, max(1, $totalPages)); // 防止超出總頁數
+    $prevDisabled = $currentPage <= 1 ? 'disabled' : '';
+    $nextDisabled = $currentPage >= $totalPages ? 'disabled' : '';
+    $offset = ($currentPage - 1)*$perPage;
+
+    $sql = "
+      SELECT comments.*, users.nickname 
+      FROM `comments`
+      LEFT JOIN `users` ON comments.username = users.username 
+      ORDER BY comments.createdAt DESC
+      LIMIT  ? OFFSET ?";
+    $commentsResult = executeQuery($conn, $sql, 'ii', $perPage, $offset);
+    if (!$commentsResult) {
+      die('Error' . $conn->error);
+    }
+  }
+
+  // 讀取 cookie & flash 訊息
+  $flash = null;
+  $flashType = 'error';
+  if (isset($_SESSION['flash'])) {
+      $flash = $_SESSION['flash'];
+      $flashType = $_SESSION['flash_type'] ?? 'error';
+      unset($_SESSION['flash']);
+      unset($_SESSION['flash_type']);
+  }
+  $isLogin = false;
+  $isAdmin = false;
+  $nickName = null;
+  $userName = null;
+  $commentEditable = false;
+  $commentDeletable = false;
+
+  // Cookie 根本不存在; Cookie 存在但是空字串 都通用
+  if (!empty($_SESSION['username'])) {
+    $row = getUserFromSession($_SESSION['username']);
+    if ($row) {
+      if ($row['roleName'] === ADMIN_ROLE_NAME) {
+        $isAdmin = true;
+      }
+      if (verifyPermission($row, EDIT_COMMENT_PERMISSION_ID)) $commentEditable = true;
+      if (verifyPermission($row, DELETE_COMMENT_PERMISSION_ID)) $commentDeletable = true;
+      $isLogin = true;
+      $nickName = $row['nickname'];
+      $userName = $row['username'];
+    }
   }
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>留言板</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="normalize.css">
-  <link rel="stylesheet" href="modal.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>留言板-首頁</title>
+  <link href="style.css" rel="stylesheet" />
 </head>
-
 <body>
-  <header class="warning"><strong>注意！本站為練習用網站，因教學用途刻意忽略資安的實作，註冊時請勿使用任何真實的帳號或密碼。</strong></header>
-  <main class="board">
-    <?php if (!is_set($username)) { ?>
-      <a class="form__button" href="register.php">註冊</a>
-      <a class="form__button" href="login.php">登入</a>
-    <?php }  else { ?>
-      <a class="form__button logout" href="logout.php">登出</a>
-      <a class="form__button" href="alter_nickname.php">編輯暱稱</a>
-      <?php if ($identity === 1) {?>
-        <a class="form__button" href="admin.php">管理頁面</a>
-      <?php } ?>
-    <?php } ?>
-    <h1 class="board__title">Comments</h1>
-    <?php 
-      if (is_set($_GET['errCode'])) {
-        $code = $_GET['errCode'];
-        $msg = 'Error';
-        if ($code === '1') {
-          $msg = '資料不齊全';
-        }
-        echo "<div class='errmsg'>" . $msg . "</div>";
-      }
-    ?>
-    <form class="form" method="POST" action="handle_add_comment.php">
-      <?php if (is_set($nickname)) { ?>
-        <div class="nickname__container">
-          <?php if (has_permission($username, 'addable')) { ?>
-            <span><strong><?php echo escape($nickname); ?></strong> 想說些甚麼…</span>
-          <?php }  else { ?>
-            <span><strong><?php echo escape($nickname); ?></strong> 您已被水桶</span>
-          <?php } ?>
-        </div>
-      <?php } ?>
-      <div class="comment__container">
-        <textarea class="comment__area" rows=5 name="content" placeholder="請輸入留言..."></textarea>
-        <?php if (!empty($username) && has_permission($username, 'addable')) { ?>
-          <button class="form__button submit">送出</button>
-          </div>
-        <?php } else { ?>
-          </div>
-          <h3>請登入以發布留言</h3>
-        <?php } ?>
-    </form>
-    <hr>
-    <section>
-    <?php
-      $page = 1;
-      if (is_set($_GET['page'])) {
-        $page = intval($_GET['page']);
-      }
-      $items_per_page = 3;
-      $offset = ($page - 1) * $items_per_page;
-      $stmt = $conn->prepare(
-        'SELECT C.id AS id, C.content AS content, C.created_at AS created_at, U.nickname AS nickname, U.username AS username '.
-        'FROM boching_board_comments AS C '.
-        'LEFT JOIN boching_board_comment_users AS U on C.username = U.username '.
-        'WHERE is_deleted IS NULL '.
-        'ORDER BY id DESC '.
-        'limit ? offset ? '
-      );
-      $stmt->bind_param('ii', $items_per_page, $offset);
-      $result = $stmt->execute();
-      if (!$result) {
-        die('Error:' . $conn->error);
-      }
-      $result = $stmt->get_result();
-      while ($row = $result->fetch_assoc()) { 
-    ?>
-      <div class="card">
-        <div class="card__avatar"></div>
-        <div class="card__body">
-          <div class="card__info">
-            <div class="author"><?php echo escape($row['nickname']); ?>(@<?php echo escape($row['username']); ?>)</div>
-            <div class="time-stamp"><?php echo escape($row['created_at']); ?></div>
-            <?php if ($row['username'] === $username || $identity === 1) {?>
-              <div class="tools">
-              <?php if (has_permission($username, 'editable')){ ?>
-                <a href="update_comment.php?id=<?php echo escape($row['id']); ?>"><img class="alter-content" src="images/alter_img.jpg"></img></a>
-              <?php } ?>
-              <?php if (has_permission($username, 'deletable')){ ?>
-                <a href="pre_delete_comment.php?id=<?php echo escape($row['id']); ?>"><img class="delete-content" src="images/delete_img.png"></img></a>
-              <?php } ?>
-              </div>
-          <?php } ?>
-          </div>
-          <p class="card__content"><?php echo escape($row['content']); ?></p>
-        </div>
+  <?php if ($announceText) { ?>
+    <header class="warning">
+      <div class="warning__wrapper">
+        <span class="warning__text marquee__content"><?= escape($announceText) ?></span>
       </div>
+    </header>
+  <?php } ?>
+  <main>
+    <h1>Comments</h1>
+    <?php if ($flash): ?>
+      <div class="flash-msg <?= $flashType === 'success' ? 'flash-success' : 'flash-error' ?>">
+        <span><?= $flashType === 'success' ? '✓' : '⚠' ?></span>
+        <?= escape($flash) ?>
+      </div>
+    <?php endif; ?>
+    <?php if ($isLogin) { ?>
+      <div class="btns">
+        <a class="admin-btn button" href="logout.php">會員登出</a>
+        <?php if ($isAdmin) { ?> 
+          <a class="logout-btn button" href="admin_role.php">管理後台</a>
+        <?php } ?>
+        <button class="update-nickname-btn button" href="#">編輯暱稱</button>
+      </div>
+      <section class="update-nickname-section hidden">
+        <form class="update-nickname-form" method="post" action="handle_update_nickname.php">
+          <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>" />
+          <label>新暱稱: <input type="text" name="nickname" /></label>
+          <input class="button" type="submit" value="送出" />
+        </form>
+        <hr />
+      </section>
+      <form class="write-area" method="post" action="add.php">
+        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>" />
+        <label for="comment">
+          <div class="write-area__author">
+            <?= escape($nickName); ?>
+          </div>
+        有甚麼想說的嗎?
+        </label>
+        <div class="write-area__submit">
+          <textarea id="comment" name="comment" rows="5" cols="33" placeholder="It was a dark and stormy night..."></textarea>
+          <input class="button" type="submit" value="送出" />
+        </div>
+      </form>
+    <?php } else { ?>
+      <a href="login.php" class="login-btn button">會員登入</a>
     <?php } ?>
-    </section>
-    <hr>
-    <?php
-      $stmt = $conn->prepare('SELECT COUNT(id) FROM boching_board_comments WHERE is_deleted IS NULL');
-      $result = $stmt->execute();
-      if (!$result) {
-        die('Error.' . $conn->error);
-      }
-      $result = $stmt->get_result();
-      $row = $result->fetch_assoc();
-      $total_count = $row['COUNT(id)'];
-      $total_page = ceil($total_count/$items_per_page);
-    ?>
-    <div class="page_info">
-      <span>共有 <?php echo $total_count; ?> 筆留言</span>
-      <span>第 <?php echo escape($page); ?> 頁</span>
-    </div>
-    <div class="pagination_container">
-      <ul class="pagination">
-      <?php 
-        $pages_per_pagination = 5;
-        $pagination = ceil($page/$pages_per_pagination);
-        $pagination_offset = ($pagination - 1) * $pages_per_pagination + 1;
-        $total_pagination = ceil($total_page/$pages_per_pagination);
-      ?>
-      <?php if ($pagination != 1) { ?>
-          <li><a href="./index.php?page=<?php echo $pagination_offset - $pages_per_pagination; ?>">«</a><li>
-      <?php } ?>
-      <?php for ($i = $pagination_offset; $i < ($pagination_offset + $pages_per_pagination); $i++) { ?>
-        <?php if ($i > $total_page) {
-          break;
-        } ?>
-        <li><a <?php if (intval($i) === $page) {echo 'class="active"';}?> href="<?php echo 'index.php?page='.$i; ?>"><?php echo $i; ?></a></li>
-      <?php } ?>
-      <?php  if ($pagination < $total_pagination) { ?>
-          <li><a href="index.php?page=<?php echo $pagination_offset + $pages_per_pagination; ?>">»</a><li>
-      <?php } ?>
-      </ul>
-    </div>
+    <hr />
+    <?php if ($total > 0) { ?>
+      <section>
+        <?php while($comment = $commentsResult->fetch_assoc()) { ?>
+          <div class="card">
+            <div class="avatar">
+              <div class="avatar__wrapper"></div>
+            </div>
+            <div class="comment-detail">
+              <div class="comment-time"><span class="comment-time__author"><?= escape($comment['nickname']); ?> (@<?= escape($comment['username']); ?>)</span><span class="comment-time__time"> &middot; <?= date_format(new DateTime($comment['createdAt']), 'Y-m-d H:i:s'); ?></span></div>
+              <div class="comment-content"><?= escape($comment['content']); ?></div>
+            </div>
+            <?php if ($comment['username'] === $userName)  { ?>
+              <div class="tools">
+                <?php if ($commentEditable) { ?>
+                  <div class="tool-wrapper">
+                    <a href="alter_comment.php?comment_id=<?= $comment['id'] ?>"><img src="images/pencil.png" /></a>
+                  </div>
+                <?php } ?>
+                <?php if ($commentDeletable) { ?>
+                  <div class="tool-wrapper">
+                    <form method="post" action="handle_delete_comment.php">
+                      <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>" />
+                      <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>" />
+                      <button type="submit">
+                        <img src="images/delete.png" />
+                      </button>
+                    </form>
+                  </div>
+                <?php } ?>
+              </div>
+            <?php } ?>
+          </div>
+        <?php } ?>
+      </section>
+      <hr />
+      <div class="pagination">
+        <a href="?page=<?= $currentPage - 1 ?>" class="arrow <?= $prevDisabled ?>">&#8249;</a>
+        <?php if ($currentPage >= 3) { ?>
+          <a href="?page=1" class="page">1</a>
+        <?php } ?>
+        <?php if ($currentPage >= 4) { ?>
+          <span class="dots">...</span>
+        <?php } ?>
+        <?php if ($currentPage >= 2) { ?>
+          <a href="?page=<?= $currentPage - 1 ?>" class="page"><?= $currentPage - 1 ?></a>
+        <?php } ?>
+        <a href="?page=<?= $currentPage ?>" class="page active"><?= $currentPage ?></a>
+        <?php if ($currentPage < $totalPages) { ?>
+          <a href="?page=<?= $currentPage + 1 ?>" class="page"><?= $currentPage + 1 ?></a>
+        <?php } ?>
+        <?php if ($currentPage + 3 <= $totalPages) { ?>
+          <span class="dots">...</span>
+        <?php } ?>
+        <?php if ($currentPage + 2 <= $totalPages) { ?>
+          <a href="?page=<?= $totalPages ?>" class="page"><?= $totalPages ?></a>
+        <?php } ?>
+        <a href="?page=<?= $currentPage + 1 ?>" class="arrow <?= $nextDisabled ?>">&#8250;</a>
+      </div>
+    <?php } else { ?>
+      <div class="no-comment">暫無留言</div>
+    <?php } ?> 
   </main>
 </body>
-<script src="index.js"></script>
 <script>
-  const commentArea = document.querySelector('.comment__area')
-  if (document.querySelector('.errmsg')) {
-    const errmsg = document.querySelector('.errmsg')
-    focusinRemoveErrmsg(commentArea, errmsg);
-  }
-  // 資料保存
-  const oldValue = window.localStorage.getItem('text')
-  commentArea.value = oldValue
-  commentArea.addEventListener('input', (e) => {
-    const value = e.target.value
-    window.localStorage.setItem('text', value)
-  })
-  // 登出或提交留言清空 localstorage
-  const logout = document.querySelector('.logout')
-  const submitBtn = document.querySelector('.submit')
-  if (logout) {
-    logout.addEventListener('click', ()=>{
-      window.localStorage.removeItem('text')
-    })
-  }
-  if (submitBtn) {
-    submitBtn.addEventListener('click', ()=>{
-      window.localStorage.removeItem('text')
+  setTimeout(() => {
+    const el = document.querySelector('.flash-msg')
+    if (el) el.classList.add('hidden')
+  }, 2000)
+  
+  // toggle 編輯暱稱顯示
+  const updateNicknameBtn = document.querySelector('.update-nickname-btn')
+  if (updateNicknameBtn) {
+    updateNicknameBtn.addEventListener('click', (e) => {
+      document.querySelector('.update-nickname-section').classList.toggle('hidden')
     })
   }
 </script>
+<script src="marquee.js"></script>
 </html>
-
