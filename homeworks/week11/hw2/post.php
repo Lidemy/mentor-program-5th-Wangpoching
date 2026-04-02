@@ -1,96 +1,126 @@
 <?php
-  session_start();
-  require_once('conn.php');
-  require_once('utils.php');
+	require_once('conn.php');
+	require_once('utils.php');
 
-  // 檢查有沒有文章 id
-  if (!is_set($_GET['id'])) {
-    die('找不到該文章');
-  } else {
-    $id = intval($_GET['id']);
-  }
+	// 將 Markdown 渲染成 html
+	require __DIR__ . '/vendor/autoload.php';
+	use League\CommonMark\Environment\Environment;
+	use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+	use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+	use League\CommonMark\MarkdownConverter;
 
-  // 檢查有沒有登入
-  check_login();
-  $username = $_SESSION['username'];
+	// 不允許 HTML 注入
+  // 不允許惡意連結
+  // 防止 XSS 攻擊
+	$environment = new Environment([
+	    'html_input' => 'strip',
+	    'allow_unsafe_links' => false,
+	]);
 
-  // 檢查登入者是否與欲觀看文章相同
-  if (!is_selfpost($id)) {
-    header('Location:index.php');
-    die('權限不足');
-  }
+	$environment->addExtension(new CommonMarkCoreExtension());
+	$environment->addExtension(new GithubFlavoredMarkdownExtension());
+	$converter = new MarkdownConverter($environment);
 
-  // 取出文章
-  $stmt = $conn->prepare(
-    'SELECT * FROM boching_blog_posts WHERE is_deleted IS NULL AND id=?'
-  );
-  $stmt->bind_param('i', $id);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Error:' . $conn->error);
-  }
-  $result = $stmt->get_result();
-  if ($result->num_rows != 1) {
-    die('找不到該文章'); 
-  } else {
-    $row = $result->fetch_assoc();   
-  }
+	$id = getValue($_GET, 'id');
+	if ($id === '') {
+		header('Location: index.php');
+		exit();
+	}
+	$id = (int)$id;
+
+	// 草稿不能看
+	$sql = "
+		SELECT posts.id as id, title, subTitle, content, status, cover_image, posts.category_id as categoryId, GROUP_CONCAT(tags.name) as tags FROM `posts`
+    LEFT JOIN `categories` as c on posts.category_id = c.id
+    LEFT JOIN `post_tags` as pt on posts.id = pt.post_id
+    LEFT JOIN `tags` on pt.tag_id = tags.id
+    WHERE posts.id = ? AND status = ?
+    GROUP BY posts.id
+	";
+	$result = executeQuery($conn, $sql, 'is', $id, PUBLISHED_POST_STATUS);
+	if (!$result || $result->num_rows === 0) {
+		header('Location: index.php');
+		exit();
+	}
+	$post = $result->fetch_assoc();
+	$tags = $post['tags'] ? explode(',', $post['tags']) : [];
+	$content = $converter->convert($post['content']);
+
+	// 取得同分類的前一篇以及下一篇文章 ID
+	$sql = "SELECT id FROM `posts` WHERE category_id = ? ORDER BY created_at ASC";
+	$result = executeQuery($conn, $sql, 'i', (int)$post['categoryId']);
+	$idsResult =  $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+	$ids = [];
+	foreach($idsResult as $item) {
+		$ids[] = $item['id'];
+	}
+	$current = array_search($post['id'] , $ids);
+
+	$nextExit = isset($ids[$current + 1]);
+	if ($nextExit) $nextId = $ids[$current + 1];
+	$prevExit = isset($ids[$current - 1]);
+	if ($prevExit) $prevId = $ids[$current - 1];
 ?>
-
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-
-  <title>部落格</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="normalize.css" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <nav class="navbar">
-    <div class="wrapper navbar__wrapper">
-      <div class="navbar__site-name">
-        <a href="index.php">Who's Blog</a>
+<html lang="en">
+  <?php
+    $title = '單一文章';
+    $localCSS = [
+      'css/base.css',
+      'css/components.css',
+      'css/style.css',
+    ];
+    $extraCSS = [
+    	'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap'
+    ];
+    require_once('template/head.php');
+  ?>
+  <body>
+    <div class="page-public-post">
+      <div class="content-wrapper">
+	      <?php
+	        $active = 'Posts';
+	        require_once('template/nav.php');
+	      ?>
+      	<div class="back-to-posts"><a href="index.php">← All posts</a></div>
+      	<div class="information">
+      		<div class="tags">
+	      		<?php foreach($tags as $tag): ?>
+	      			<span class="tag"><?= escape($tag) ?></span>
+	      		<?php endforeach; ?>
+	      	</div>
+	      	<div class="information__detail">
+	      		<span>December 1, 2024</span>
+	      		<span>8 min Read</span>
+	      	</div>
+	      	<div class="title"><?= $post['title'] ?></div>
+	      	<div class="subtitle"><?= $post['subTitle'] ?></div>
+      	</div>
       </div>
-      <ul class="navbar__list">
-        <div>
-          <li><a href="#">文章列表</a></li>
-          <li><a href="#">分類專區</a></li>
-          <li><a href="#">關於我</a></li>
+	    	<?php if ($post['cover_image']): ?>
+	      	<div class="cover_image">
+	      		<img src="<?= UPLOAD_COVERS_URL . $post['cover_image'] ?>" />
+	      	</div>
+	      <?php endif; ?>
+      <div class="content-wrapper content">
+      	<?= $content ?>
+      </div>
+      <div class="content-wrapper">
+	      <div class="indicators">
+	      	<?php if ($prevExit): ?>
+	      		<div class="btn prev-post"><a href="post.php?id=<?= $prevId ?>">← Prev post</a></div>
+	      	<?php endif; ?>
+	      	<?php if ($nextExit): ?>
+	      		<div class="btn next-post"><a href="post.php?id=<?= $nextId ?>">Next post →</a></div>
+	      	<?php endif; ?>
+	      </div>
+	    </div>
+      <footer class="footer">Handcrafted by <span class="accent">Pocyun</span> for <span class="accent" id="years"></span> years · <div class="footer-right">
+          <a href="https://github.com/yourname" target="_blank">GitHub</a>
+          <a href="https://linkedin.com/in/yourname" target="_blank">LinkedIn</a>
         </div>
-        <div>
-          <li><a href="admin.php">管理後台</a></li>
-          <li><a href="logout.php">登出</a></li>
-        </div>
-      </ul>
+      </footer>
     </div>
-  </nav>
-  <section class="banner">
-    <div class="banner__wrapper">
-      <h1>存放技術之地</h1>
-      <div>Welcome to my blog</div>
-    </div>
-  </section>
-  <div class="container-wrapper">
-    <div class="posts">
-      <article class="post">
-        <div class="post__header">
-          <div><?php echo escape($row['title']); ?></div>
-          <div class="post__actions">
-            <?php if (isset($username) && (getdata_from_username($id)["username"] == $username)) { ?>
-              <a class="post__action" href="update_post.php">編輯</a>
-            <?php } ?>
-          </div>
-        </div>
-        <div class="post__info">
-          <?php echo escape($row['created_at']); ?>
-        </div>
-        <div class="post__content"><?php echo escape($row['content']); ?></div>
-      </article>
-    </div>
-  </div>
-  <footer>Copyright © 2020 Who's Blog All Rights Reserved.</footer>
-</body>
+  </body>
+  <script src="js/footer.js"></script>
 </html>

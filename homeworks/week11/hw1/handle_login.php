@@ -3,38 +3,37 @@
   require_once('conn.php');
   require_once('utils.php');
 
-  // 沒有輸入帳號或密碼（type 1 error）
-  if (!is_set($_POST['username']) || !is_set($_POST['password'])) {
-    header('Location:login.php?errCode=1');
-    die('資料不齊全');
+  // 檢查欄位
+  $userName = trim($_POST['username'] ?? '');
+  if ($userName === '') {
+      $_SESSION['flash'] = '帳號不可為空';
+      header('Location: login.php');
+      exit();
   }
 
-  // 搜尋存放已註冊帳密的資料庫
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  $sql = 'SELECT password FROM boching_board_comment_users WHERE username=?';
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param('s',$username);
-  $result = $stmt->execute();
+  $password = trim($_POST['password'] ?? '');
+  if ($password === '') {
+      $_SESSION['flash'] = '密碼不可為空';
+      header('Location: login.php');
+      exit();
+  }
 
+  $sql = "SELECT `username`, `password_hash` FROM `users` WHERE username=?";
+  $result = executeQuery($conn, $sql, 's', $userName);
   if (!$result) {
-    die('Error. '.$conn->error);
+    $_SESSION['flash'] = '系統錯誤';
+    header('Location: login.php');
+    exit();
+  }
+  $row = $result->fetch_assoc();
+  if (!$row || !password_verify($password, $row['password_hash'])) {
+    $_SESSION['flash'] = '帳號密碼錯誤';
+    header('Location: login.php');
+    exit();
   }
 
-  $result = $stmt->get_result();
-  // 找到資料庫的帳號是正確的
-  if ($result->num_rows === 1) {
-    if (password_verify($password,$result->fetch_assoc()['password'])) {
-      // 給一組新的通行證並存入 username 變數
-      session_regenerate_id();
-      $_SESSION['username'] = $username;
-      header('Location:index.php');
-    } else {
-      // 沒有在資料庫撈到密碼->密碼錯誤（type 3 error）
-      header('Location:login.php?errCode=3');
-    }
-  } else {
-      // 沒有在資料庫撈到帳號->帳號錯誤（type 2 error）
-      header('Location:./login.php?errCode=2');    
-  }
+  // 發放 Cookie
+  $_SESSION['username'] = $row['username'];
+  header('Location: index.php');
+  exit();
 ?>

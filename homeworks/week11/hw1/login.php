@@ -1,59 +1,64 @@
 <?php
   session_start();
-  require_once('conn.php');
   require_once('utils.php');
-?>
-<!DOCTYPE html>
 
-<html>
+  // Get Announcements
+  $announceText = getAnnouncements($conn);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>留言板</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./normalize.css">
-  <link rel="stylesheet" href="./modal.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>留言板-登入</title>
+  <link href="login-style.css" rel="stylesheet" />
 </head>
-
 <body>
-  <header class="warning"><strong>注意！本站為練習用網站，因教學用途刻意忽略資安的實作，註冊時請勿使用任何真實的帳號或密碼。</strong></header>
-  <main class="board">
-    <a class="form__button" href="./index.php">回留言板</a>
-    <a class="form__button" href="./register.php">註冊</a>
-    <h1 class="board__title">登入</h1>
-    <?php 
-      if (!empty($_GET['errCode'])) {
-        $code = $_GET['errCode'];
-        $msg = 'Error';
-        if ($code === '1') {
-          $msg = '資料不齊全';
-        } else if ($code === '2') {
-          $msg = '帳號錯誤';          
-        } else {
-          $msg = '密碼錯誤';          
-        }
-        echo '<div class="errmsg">' . $msg . '</div>';
-      }
-    ?>
-    <form class="form" method="POST" action="handle_login.php">
-      <div class="username__container">
-        <span>帳號：</span>
-        <input class="username__input" type="text" name="username" placeholder="輸入帳號"/>
+  <?php if ($announceText) { ?>
+    <header class="warning">
+      <div class="warning__wrapper">
+        <span class="warning__text marquee__content"><?= escape($announceText) ?></span>
       </div>
-      <div class="password__container">
-        <span>密碼：</span>
-        <input class="password__input" type="password" name="password" placeholder="輸入密碼"/>
+    </header>
+  <?php } ?>
+  <main>
+    <div class="title">
+      <h1>登入</h1>
+      <div class="buttons">
+        <a href="index.php" class="back-btn button">回留言板</a>
+        <a href="register.php" class="login-btn button">註冊</a>
       </div>
-      <button class="form__button">送出</button>
+    </div>
+    <form class="login-area" method="post" action="handle_login.php">
+      <div class="error-msg hidden">
+        <?php if (isset($_SESSION['flash'])) {
+          echo $_SESSION['flash'];
+          unset($_SESSION['flash']);
+        } ?>
+      </div>
+      <div>
+        <label for="username">使用者名稱：</label>
+        <input type="text" id="username" name="username" >
+      </div>
+      <div>
+        <label for="password">密碼：</label>
+        <input type="password" id="password" name="password" >
+      </div>
+      <div>
+        <input class="button" type="submit" value="提交" />
+      </div>
     </form>
   </main>
 </body>
-<script src="./index.js"></script>
-<script>  
-  const form = document.querySelector('.form');
-  if (document.querySelector('.errmsg')) {
-    const errmsg = document.querySelector('.errmsg')
-    focusinRemoveErrmsg(form, errmsg);
+<script>
+  const error = document.querySelector('.error-msg')
+  if (error.innerText !== '') {
+    error.classList.remove('hidden')
+    setTimeout(() => {
+      error.classList.add('hidden')
+    }, 2000)
   }
 </script>
+<script src="marquee.js"></script>
 </html>
-
